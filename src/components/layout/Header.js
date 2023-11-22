@@ -93,11 +93,7 @@ function Header({
           <Link to="/sign-in" className="btn-sign-in">
             <Logout />
           </Link>
-          <Input
-            className="header-search"
-            placeholder="Type here..."
-            prefix={<SearchOutlined />}
-          />
+       
         </Col>
       </Row>
     </>
