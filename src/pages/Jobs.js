@@ -3,7 +3,6 @@ import {
    Col,
    Card,
    Radio,
-   Typography,
    Pagination,
 } from "antd";
 
@@ -22,7 +21,7 @@ function Jobs() {
                   <Card
                      bordered={false}
                      className="criclebox tablespace mb-24"
-                     title="jobs"
+                     title="Danh sách công việc"
                      extra={
                         <>
                            <Radio.Group onChange={onChange} defaultValue="all">

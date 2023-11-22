@@ -57,7 +57,7 @@ function Sidenav({ color }) {
             >
               <Dashboard />
             </span>
-            <span className="label">Dashboard</span>
+            <span className="label">Trang chủ</span>
           </NavLink>
         </Menu.Item>
         <Menu.Item key="2">
@@ -70,7 +70,7 @@ function Sidenav({ color }) {
             >
               <BillingIcon />
             </span>
-            <span className="label">Billing</span>
+            <span className="label">Hóa đơn</span>
           </NavLink>
         </Menu.Item>
         <Menu.Item key="3">
@@ -83,7 +83,7 @@ function Sidenav({ color }) {
             >
               <User />
             </span>
-            <span className="label">Users</span>
+            <span className="label">Danh sách người dùng</span>
           </NavLink>
         </Menu.Item>
         <Menu.Item key="4">
@@ -96,7 +96,7 @@ function Sidenav({ color }) {
             >
               <ListIcon />
             </span>
-            <span className="label">Jobs</span>
+            <span className="label">Danh sách công việc</span>
           </NavLink>
         </Menu.Item>
         <Menu.Item key="5">
@@ -109,7 +109,7 @@ function Sidenav({ color }) {
             >
               <BillingIcon />
             </span>
-            <span className="label">Applications</span>
+            <span className="label">Danh sách đơn ứng tuyển</span>
           </NavLink>
         </Menu.Item>
         <Menu.Item key="6">

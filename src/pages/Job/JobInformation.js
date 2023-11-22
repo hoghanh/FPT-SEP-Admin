@@ -6,7 +6,7 @@ import {
    Divider,
 } from "antd";
 import { Clockicon, PaperClipOutlined, Trash } from "../../components/icon/Icon";
-import { NavLink } from "react-router-dom/cjs/react-router-dom.min";
+import { NavLink } from "react-router-dom";
 
 const { Title, Text } = Typography;
 

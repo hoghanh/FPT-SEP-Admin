@@ -10,6 +10,8 @@ import {
 } from "antd";
 
 import { SearchOutlined } from "@ant-design/icons";
+import { get } from "../utils/APICaller";
+import { useState } from "react";
 
 // import { ToTopOutlined } from "@ant-design/icons";
 // import { Link } from "react-router-dom";
@@ -252,21 +254,22 @@ const data = [
    }
 ];
 
-const DeactiveButton = ({ status }) => {
-   if (status === false) {
-      return (
-         <Button type="primary" className="tag-primary">
-            Activate
-         </Button>
-      )
-   } else {
-      return (
-         <Button type="primary" className="tag-primary">
-            Deactivate
-         </Button>
-      )
-   }
-};
+const DeactiveButton = ({status}) => {
+   const [statusUser, setStatusUser] = useState(status);
+ 
+   const handleClick = () => {
+      console.log(statusUser)
+      setStatusUser(!statusUser);
+   };
+   console.log(statusUser)
+
+ 
+   return (
+     <Button type="primary" className="tag-primary" onClick={handleClick}>
+       {status ? 'Deactivate' : 'Activate'}
+     </Button>
+   );
+ };
 
 const UserAvatar = ({ user }) => {
    return (
@@ -293,6 +296,11 @@ data.forEach(account => {
 })
 
 function Accounts() {
+   const [searchTerm, setSearchTerm] = useState('');
+
+  const filteredData = data.filter(item =>
+    item.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
    return (
       <>
@@ -307,8 +315,9 @@ function Accounts() {
                         <div className="header-control">
                            <Input
                               className="header-search"
-                              placeholder="Type here..."
+                              placeholder="Tìm kiếm theo tên"
                               prefix={<SearchOutlined />}
+                              onChange={e => setSearchTerm(e.target.value)}
                            />
                         </div>
                      }
@@ -316,7 +325,7 @@ function Accounts() {
                      <div className="table-responsive">
                         <Table
                            columns={accounts}
-                           dataSource={data}
+                           dataSource={filteredData}
                            pagination={true}
                            className="ant-border-space"
                         />
@@ -332,3 +341,17 @@ function Accounts() {
 }
 
 export default Accounts;
+
+// const [accounts, setAccounts] = useState([]);
+
+
+// const getAccounts =  () => {
+//     get({ endpoint: `/accounts/` })
+//      .then((response) => {
+//        const data = response.data;
+//        setAccounts(data);
+//      })
+//      .catch((error) => {
+//        console.log(error);
+//      });
+//  };
