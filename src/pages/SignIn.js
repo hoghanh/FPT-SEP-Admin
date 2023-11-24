@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component } from 'react';
 import {
   Layout,
   Button,
@@ -8,7 +8,7 @@ import {
   Form,
   Input,
   Switch,
-} from "antd";
+} from 'antd';
 function onChange(checked) {
   console.log(`switch to ${checked}`);
 }
@@ -17,81 +17,81 @@ const { Header, Footer, Content } = Layout;
 
 export default function SignIn() {
   const onFinish = (values) => {
-    console.log("Success:", values);
+    console.log('Success:', values);
   };
 
   const onFinishFailed = (errorInfo) => {
-    console.log("Failed:", errorInfo);
+    console.log('Failed:', errorInfo);
   };
   return (
     <>
-      <Layout className="layout-default layout-signin">
+      <Layout className='layout-default layout-signin'>
         <Header>
-          <div className="header-col header-brand">
-            <h5>FPT-SEP Dashboard</h5>
+          <div className='header-col header-brand'>
+            <h5>FPT-SEP QTV</h5>
           </div>
         </Header>
-        <Content className="signin">
-          <Row justify="space-around">
+        <Content className='signin'>
+          <Row justify='space-around'>
             <Col
               xs={{ span: 24, offset: 0 }}
               lg={{ span: 6, offset: 0 }}
               md={{ span: 12 }}
             >
-              <Title className="mb-15">Sign In</Title>
-              <Title className="font-regular text-muted" level={5}>
-                Enter your email and password to sign in
+              <Title className='mb-15'>Đăng nhập</Title>
+              <Title className='font-regular text-muted' level={5}>
+                Nhập tài khoản và mật khẩu để đăng nhập
               </Title>
               <Form
                 onFinish={onFinish}
                 onFinishFailed={onFinishFailed}
-                layout="vertical"
-                className="row-col"
+                layout='vertical'
+                className='row-col'
               >
                 <Form.Item
-                  className="username"
-                  label="Email"
-                  name="email"
+                  className='username'
+                  label='Email'
+                  name='email'
                   rules={[
                     {
                       required: true,
-                      message: "Please input your email!",
+                      message: 'Vui lòng nhập tài khoản của bạn!',
                     },
                   ]}
                 >
-                  <Input placeholder="Email" />
+                  <Input placeholder='Tài khoản của bạn...' />
                 </Form.Item>
 
                 <Form.Item
-                  className="username"
-                  label="Password"
-                  name="password"
+                  className='username'
+                  label='Password'
+                  name='password'
                   rules={[
                     {
                       required: true,
-                      message: "Please input your password!",
+                      message: 'Vui lòng nhập mật khẩu của bạn',
                     },
                   ]}
                 >
-                  <Input placeholder="Password" />
+                  <Input placeholder='Mật khẩu' />
                 </Form.Item>
 
                 <Form.Item
-                  name="remember"
-                  className="aligin-center"
-                  valuePropName="checked"
+                  name='remember'
+                  className='aligin-center'
+                  valuePropName='checked'
                 >
                   <Switch defaultChecked onChange={onChange} />
-                  Remember me
+                  Nhớ tài khoản
                 </Form.Item>
 
                 <Form.Item>
                   <Button
-                    type="primary"
-                    htmlType="submit"
-                    style={{ width: "100%" }}
+                    type='primary'
+                    htmlType='submit'
+                    style={{ width: '100%' }}
                   >
-                    SIGN IN
+                    ĐĂNG NHẬP
                   </Button>
                 </Form.Item>
               </Form>
@@ -99,8 +99,8 @@ export default function SignIn() {
           </Row>
         </Content>
         <Footer>
-          <p className="copyright">
-            {" "}
+          <p className='copyright'>
+            {' '}
             © 2023 FPT Student-Enterprise Connection Platform.
           </p>
         </Footer>
@@ -108,4 +108,3 @@ export default function SignIn() {
     </>
   );
 }
-

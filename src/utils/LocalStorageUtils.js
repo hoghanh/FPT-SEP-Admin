@@ -1,5 +1,4 @@
 import jwtDecode from 'jwt-decode';
-
 import { TOKEN } from '../config';
 
 class LocalStorageUtils {
