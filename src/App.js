@@ -22,6 +22,8 @@ function App() {
           <Route exact path="/dashboard" component={Home} />
           <Route exact path="/billing" component={Billing} />
           <Route exact path="/user" component={Users} />
+          <Route exact path="/user/profile-freelancer" component={FreelancerProfile} />
+          <Route exact path="/user/profile-client" component={ClientProfile} />
           <Route exact path="/job" component={Jobs} />
           <Route exact path="/freelancerProfile" component={FreelancerProfile} />
           <Route exact path="/clientProfile" component={ClientProfile} />
