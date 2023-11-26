@@ -8,29 +8,17 @@ function LineChart() {
 
   return (
     <>
-      <div className="linechart">
-        <div>
-          <Title level={5}>Revenue</Title>
-          {/* <Paragraph className="lastweek">
-            than last week <span className="bnb2">+30%</span>
-          </Paragraph> */}
-        </div>
-        {/* <div className="sales">
-          <ul>
-            <li>{<MinusOutlined />} Traffic</li>
-            <li>{<MinusOutlined />} Sales</li>
-          </ul>
-        </div> */}
-      </div>
+      <div style={{ marginTop: "1rem" }}>
 
-      <ReactApexChart
-        className="full-width"
-        options={lineChart.options}
-        series={lineChart.series}
-        type="area"
-        height={350}
-        width={"100%"}
-      />
+        <ReactApexChart
+          className="full-width"
+          options={lineChart.options}
+          series={lineChart.series}
+          type="area"
+          height={350}
+          width={"100%"}
+        />
+      </div>
     </>
   );
 }

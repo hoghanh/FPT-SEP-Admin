@@ -43,7 +43,7 @@ function JobItem() {
                      </Group>
                   </NavLink>
                   <NavLink
-                     to="/job/jobDetail"
+                     to="/jobDetail"
                   >
                      <Title style={{ margin: 0 }} level={5}>
                         Javascript expert with Next.js and React.js expertise

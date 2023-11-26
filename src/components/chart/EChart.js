@@ -5,25 +5,6 @@ import eChart from "./configs/eChart";
 function EChart() {
   const { Title, Paragraph } = Typography;
 
-  const items = [
-    {
-      Title: "3,6K",
-      user: "Users",
-    },
-    {
-      Title: "2m",
-      user: "Clicks",
-    },
-    {
-      Title: "$772",
-      user: "Sales",
-    },
-    {
-      Title: "82",
-      user: "Items",
-    },
-  ];
-
   return (
     <>
       <div id="chart">
@@ -36,9 +17,9 @@ function EChart() {
         />
       </div>
       <div className="chart-vistior">
-        <Title level={5}>Posted Jobs</Title>
+        <Title level={5}>Tổng bài viết đã đăng</Title>
         <Paragraph className="lastweek">
-          than last week <span className="bnb2">+10 jobs</span>
+          hơn tháng trước <span className="bnb2">+10</span>
         </Paragraph>
       </div>
     </>
