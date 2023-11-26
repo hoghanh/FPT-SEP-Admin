@@ -136,11 +136,11 @@ function JobInformation() {
             <Col sm={{ span: 22 }} >
                <Row justify="space-between">
                   <Col md={24} xl={16}>
-                     <Title level={3} style={{ margin: 0 }}>
+                     <Title level={3} style={{ margin: 0 }} className="mb-2">
                         {job.title}
                      </Title>
                      <Title level={4} style={{ margin: 0 }}>
-                        Belong to: <NavLink to="/clientProfile">
+                        Bài đăng của: <NavLink to="/clientProfile">
                            {job.clients.accounts.name}
                         </NavLink>
                      </Title>
@@ -152,7 +152,7 @@ function JobInformation() {
                      <div style={{ display: "flex", flexWrap: "wrap", alignContent: "center", justifyContent: "flex-end" }}>
                         <Clockicon />
                         <Text style={{ marginLeft: 10 }}>
-                           Posted: {toDate(job.createdAt)}
+                           Đăng ngày: {toDate(job.createdAt)}
                         </Text>
                      </div>
                   </Col>

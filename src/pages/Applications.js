@@ -14,7 +14,7 @@ function Applications() {
               bordered={false}
               className='criclebox tablespace mb-24'
               bodyStyle={{ marginTop: '10px' }}
-              title='Applications'
+              title='Đơn Ứng tuyển'
               extra={
                 <>
                   <Radio.Group onChange={onChange} defaultValue='all'>

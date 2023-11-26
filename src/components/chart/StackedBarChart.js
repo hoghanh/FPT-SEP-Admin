@@ -8,19 +8,19 @@ function StackedBarChart() {
    const items = [
       {
          Amount: "223",
-         status: "Sent",
+         status: "Gửi đi",
       },
       {
          Amount: "128",
-         status: "Declined",
+         status: "Từ chối",
       },
       {
          Amount: "75",
-         status: "Interview",
+         status: "Phỏng vấn",
       },
       {
          Amount: "50",
-         status: "Approved",
+         status: "Chấp thuận",
       },
    ];
 
@@ -36,9 +36,9 @@ function StackedBarChart() {
             />
          </div>
          <div className="chart-vistior">
-            <Title level={5}>Posted Job</Title>
+            <Title level={5}>Tổng đơn ứng tuyển</Title>
             <Paragraph className="lastweek">
-               than last week <span className="bnb2">+10 jobs</span>
+               hơn tháng trước <span className="bnb2">+36</span>
             </Paragraph>
             <Row gutter>
                {items.map((v, index) => (

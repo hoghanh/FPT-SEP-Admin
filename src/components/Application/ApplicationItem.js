@@ -35,7 +35,7 @@ function ApplicationItem() {
                   <Row>
                      <Col>
                         <Title style={{ margin: 0 }} level={5}>
-                           Job:
+                           Công việc:
                         </Title>
                      </Col>
                      <Col>
@@ -48,12 +48,12 @@ function ApplicationItem() {
             </Col>
             <Col span={24}>
                <Descriptions>
-                  <Descriptions.Item label="Sent Date">
+                  <Descriptions.Item label="Ngày gửi">
                      <Text level={4}>
                         19/23/45
                      </Text>
                   </Descriptions.Item>
-                  <Descriptions.Item label="Status">
+                  <Descriptions.Item label="Trạng thái">
                      <Text level={4}>
                         Declined
                      </Text>
