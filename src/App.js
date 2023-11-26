@@ -27,7 +27,6 @@ function App() {
           <Route exact path="/clientProfile" component={ClientProfile} />
           <Route exact path="/jobDetail" component={JobDetail} />
           <Route exact path="/applications" component={Applications} />
-          <Redirect from="*" to="/dashboard" />
         </Main>
       </Switch>
     </div>

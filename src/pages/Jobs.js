@@ -4,13 +4,39 @@ import {
    Card,
    Radio,
    Pagination,
+   notification,
 } from "antd";
+import { useEffect, useState } from "react";
+import { get } from "utils/APICaller";
 
 import JobItem from "../components/job/JobItem";
 
 function Jobs() {
-   const onChange = (e) => console.log(`radio checked:${e.target.value}`);
+   const [limit, setLimit] = useState(10);
+   const [page, setPage] = useState(1);
+   const [jobList, setJobList] = useState([]);
+   const [pagination, setPagination] = useState(0);
 
+   const onChange = (pageNumber) => {
+        setPage(pageNumber);
+    };
+
+   useEffect(() => {
+      get({ endpoint: `/job?limit=${limit}&page=${page}` })
+      .then((res) => {
+        setJobList(res.data.jobs);
+        setPagination(res.data.pagination);
+      })
+      .catch((error) => {
+        notification.error({
+          message: error.response.data.message,
+        });
+      });
+    }, [page]);
+
+    console.log('job', jobList);
+    console.log('pagination', pagination);
+   
    return (
       <>
          <div className="tabled">
@@ -32,14 +58,20 @@ function Jobs() {
                      }
                   >
                      <div className="table-responsive">
-                        <JobItem />
-                        <JobItem />
-                        <JobItem />
-                        <JobItem />
-                        <JobItem />
+                        {
+                           jobList.map((jobItem, id) => {
+                              return (<JobItem key={id} data={jobItem} />)
+                           })
+                        }
                      </div>
                      <div style={{ display: "flex", justifyContent: "flex-end", padding: "1rem 2rem" }}>
-                        <Pagination />
+                     <Pagination
+                        current={pagination?.currentPage}
+                        total={pagination?.totalItems}
+                        onChange={onChange}
+                        showSizeChanger={false}
+                        style={{ padding: 20, display: 'flex', justifyContent: 'center' }}
+                     />
                      </div>
                      <div className="uploadfile pb-15 shadow-none">
                      </div>
