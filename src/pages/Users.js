@@ -26,12 +26,16 @@ function Accounts() {
       .then((res) => {
         setDataUser(res.data);
       })
-      .catch((err) => { });
+      .catch((err) => {
+        notification.error({
+          message: err.response.data.message,
+        });
+      });
   }, [dataUser]);
 
   const handleClick = (id, status) => {
     if (status) {
-      remove({ endpoint: `/accounts/profile/${id}` })
+      remove({ endpoint: `/freelancer/profile/${id}` })
         .then((res) => {
           notification.success({
             message: 'Tài khoản đã bị khoá',
@@ -43,7 +47,7 @@ function Accounts() {
           });
         });
     } else {
-      put({ endpoint: `/accounts/active/${id}` })
+      put({ endpoint: `/freelancer/active/${id}` })
         .then((res) => {
           notification.success({
             message: 'Tài khoản đã được kích hoạt',
@@ -61,7 +65,7 @@ function Accounts() {
     item.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const accounts = [
+  const freelancer = [
     {
       title: 'Người dùng',
       dataIndex: 'image',
@@ -76,7 +80,7 @@ function Accounts() {
               size={40}
               src={record.image}
             ></Avatar>
-            <Link to={record.role === 'freelancer' ? '/user/profile-freelancer' : '/user/profile-client'}>
+            <Link to={record.role === 'freelancer' ? `/user/profile-freelancer/${record.id}` : `/user/profile-client/${record.id}`}>
               <div className='avatar-info'>
                 <Title level={5}>{record.name}</Title>
                 <p>{record.email}</p>
@@ -164,7 +168,7 @@ function Accounts() {
             >
               <div className='table-responsive'>
                 <Table
-                  columns={accounts}
+                  columns={freelancer}
                   dataSource={filteredData}
                   pagination={true}
                   className='ant-border-space'

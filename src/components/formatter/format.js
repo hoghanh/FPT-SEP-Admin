@@ -9,7 +9,6 @@ export const CalculateDaysLeft = (endDate) => {
   const currentDate = moment();
   endDate = moment(endDate);
   let output;
-
   if (endDate.isSameOrAfter(currentDate)) {
     const duration = moment.duration(endDate.diff(currentDate));
     const daysDifference = duration.days();

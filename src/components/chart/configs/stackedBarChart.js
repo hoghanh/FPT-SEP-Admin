@@ -1,12 +1,12 @@
 const stackedBarChart = {
   series: [{
-    name: 'Declined',
+    name: 'Từ chối',
     data: [44, 55, 41, 37, 22, 43, 21, 53, 40, 39, 42, 0]
   }, {
-    name: 'Interview',
+    name: 'Phỏng vấn',
     data: [29, 32, 33, 30, 13, 43, 32, 25, 18, 30, 27, 0]
   }, {
-    name: 'Approve',
+    name: 'Nhận việc',
     data: [12, 17, 11, 9, 9, 11, 20, 10, 21, 15, 9, 0]
   }],
 

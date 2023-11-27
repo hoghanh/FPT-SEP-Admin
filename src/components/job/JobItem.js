@@ -1,16 +1,18 @@
 import { NavLink } from 'react-router-dom';
-import { Typography, Avatar, notification } from 'antd';
+import { Typography, Avatar, notification, Modal } from 'antd';
 import { Trash } from '../icon/Icon';
 import { FileTextFilled } from '@ant-design/icons';
 import { CalculateDaysLeft, formatDate } from 'components/formatter/format';
 import { remove } from 'utils/APICaller';
+import { ExclamationCircleFilled } from '@ant-design/icons';
+
+const { confirm } = Modal;
+
 
 const { Title, Text } = Typography;
 const { Group } = Avatar;
-const face2 =
-  'https://firebasestorage.googleapis.com/v0/b/fpt-sep-fe-eb227.appspot.com/o/images%2Favatars%2Fapricot.jpg?alt=media&token=bb762da7-2a30-4b81-be24-a7ec528f45d5';
 
-function JobItem({ data }) {
+const showPropsConfirm = (id) => {
   function removeItem(id) {
     remove({ endpoint: `/job/detail/${id}` })
       .then((res) => {
@@ -25,8 +27,21 @@ function JobItem({ data }) {
         });
       });
   }
+  confirm({
+    title: 'Cảnh báo xóa!',
+    icon: <ExclamationCircleFilled />,
+    content: 'Bạn chắc chắn muốn xóa bài đăng này?',
+    okText: 'Chấp nhận',
+    okType: 'danger',
+    cancelText: 'Hủy',
+    onOk() {
+      removeItem(id)
+    },
+  });
+};
 
-   
+function JobItem({ data }) {
+  
   return (
     <>
       <div
@@ -64,8 +79,8 @@ function JobItem({ data }) {
               </Title>
             </NavLink>
           </div>
-          <div onClick={() => removeItem(data?.id)}>
-            <Trash  />
+          <div style={{cursor: 'pointer'}} onClick={() => showPropsConfirm(data?.id)}>
+            <Trash />
           </div>
         </div>
         <Text level={4}>
@@ -74,14 +89,14 @@ function JobItem({ data }) {
         </Text>
         <Typography.Paragraph
           ellipsis={{
-            rows: 3,
+            rows: 2,
             expandable: false,
           }}
         >
           {data?.description}
         </Typography.Paragraph>
         <Title level={5} style={{ margin: '5px 0' }}>
-          {data?.applied} đã ứng tuyển <FileTextFilled />
+          {data?.applied !== null ? data?.applied : '0'} đã ứng tuyển <FileTextFilled />
         </Title>
       </div>
     </>

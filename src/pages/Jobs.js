@@ -33,9 +33,6 @@ function Jobs() {
         });
       });
     }, [page]);
-
-    console.log('job', jobList);
-    console.log('pagination', pagination);
    
    return (
       <>

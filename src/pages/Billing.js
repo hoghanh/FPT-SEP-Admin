@@ -6,6 +6,7 @@ import {
   Avatar,
   Table,
   Space,
+  notification
 } from "antd";
 import {
   PlusOutlined,
@@ -20,35 +21,12 @@ import {
   Edit,
 } from "../components/icon/Icon";
 import LineChart from "../components/chart/LineChart";
+import { useEffect, useState } from "react";
+import { get } from "utils/APICaller";
+import { FormatVND } from "components/formatter/format";
 
 const { Title } = Typography;
 
-const count = [
-  {
-    today: 'Tổng giao dịch',
-    title: '105',
-    icon: <Transactions size={46} />,
-  },
-  {
-    today: 'Tổng Doanh Thu',
-    title: '130,000',
-    persent: 'VND',
-    icon: <Money size={46} />,
-    bnb: 'bnb3',
-  },
-  {
-    today: 'Số lần Nạp tiền',
-    title: "45",
-    icon: <Deposit size={38} />,
-  },
-  {
-    today: 'Tổng tiền gửi vào',
-    title: '1,400,000',
-    persent: 'VND',
-    icon: <Money size={46} />,
-    bnb: 'bnb3',
-  },
-];
 
 const payments = [
   {
@@ -132,6 +110,69 @@ const columns = [
 const fee = '10,000';
 
 function Billing() {
+  const [revenue, setRevenue] = useState([]);
+  const [totalRevenue, setTotalRevenue] = useState(0);
+  const [amountRevenue, setAmountRevenue] = useState(0);
+  const [deposit, setDeposit] = useState([]);
+  const [totalDeposit, setTotalDeposit] = useState(0);
+  const [amountDeposit, setAmountDeposit] = useState(0);
+
+  useEffect(() => {
+    get({ endpoint: `/payment/revenue` })
+      .then((res) => {
+        const data = res.data;
+        setRevenue(data.payments)
+        setTotalRevenue(data.revenue);
+        setAmountRevenue(data.total)
+      })
+      .catch((error) => {
+        notification.error({
+          message: error.response.data.message,
+        });
+      });
+      get({ endpoint: `/payment/deposit` })
+      .then((res) => {
+        const data = res.data;
+        setRevenue(data.payments)
+        setTotalDeposit(data.deposit);
+        setAmountDeposit(data.total)
+
+      })
+      .catch((error) => {
+        notification.error({
+          message: error.response.data.message,
+        });
+      });
+  }, []);
+
+
+  
+const count = [
+  {
+    today: 'Tổng giao dịch',
+    title: `${amountRevenue}`,
+    icon: <Transactions size={46} />,
+  },
+  {
+    today: 'Tổng doanh Thu',
+    title: `${FormatVND(totalRevenue ,'')}`,
+    persent: 'VND',
+    icon: <Money size={46} />,
+    bnb: 'bnb3',
+  },
+  {
+    today: 'Số lần nạp tiền',
+    title: `${amountDeposit}`,
+    icon: <Deposit size={38} />,
+  },
+  {
+    today: 'Tổng tiền nạp vào',
+    title: `${FormatVND(totalDeposit ,'')}`,
+    persent: 'VND',
+    icon: <Money size={46} />,
+    bnb: 'bnb3',
+  },
+];
 
   return (
     <>
@@ -194,7 +235,7 @@ function Billing() {
                 </Space>
               }
             >
-              <LineChart />
+              <LineChart revenue={revenue} />
             </Card>
           </Col>
         </Row>

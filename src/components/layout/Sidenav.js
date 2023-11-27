@@ -92,19 +92,6 @@ function Sidenav({ color }) {
             </span>
           </NavLink>
         </Menu.Item>
-        <Menu.Item key="6">
-          <NavLink to="/freelancerProfile">
-            <span
-              className="icon"
-              style={{
-                background: page === "jobs" ? color : "",
-              }}
-            >
-              <File size={16} />
-            </span>
-            <span className="label">Freelacner Profile</span>
-          </NavLink>
-        </Menu.Item>
       </Menu>
     </>
   );

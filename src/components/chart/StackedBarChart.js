@@ -1,26 +1,241 @@
 import ReactApexChart from "react-apexcharts";
 import { Row, Col, Typography } from "antd";
-import stackedBarChart from "./configs/stackedBarChart";
 
-function StackedBarChart() {
+function StackedBarChart({applications}) {
    const { Title, Paragraph } = Typography;
 
+   const applicationByMonth = [];
+   const interviewApplicationsByMonth = [];
+   const declinedApplicationsByMonth = [];
+   const approvedApplicationsByMonth = [];
+   const sentApplicationsByMonth = [];
+   
+
+   function getMonthThisMonth() {
+      const today = new Date();
+      return today.getMonth() + 1;
+    }
+
+
+   for (let month = 0; month < 12; month++) {
+      const applicationsInMonth = applications.filter((application) => {
+         const createdAt = new Date(application.sendDate);
+         const monthOfSendDate = createdAt.getMonth();
+         return monthOfSendDate === month;
+      });
+      applicationByMonth.push(applicationsInMonth.length);
+
+      const interviewApplicationsInMonth = applications.filter((application) => {
+         const createdAt = new Date(application.sendDate);
+         const monthOfSendDate = createdAt.getMonth();
+         return (
+            monthOfSendDate === month &&
+            application.status === 'interview'
+         );
+      });
+      interviewApplicationsByMonth.push(interviewApplicationsInMonth.length);
+
+      const declinedApplicationsInMonth = applications.filter((application) => {
+         const createdAt = new Date(application.sendDate);
+         const monthOfSendDate = createdAt.getMonth();
+         return (
+            monthOfSendDate === month &&
+            application.status === 'declined'
+         );
+     });
+     declinedApplicationsByMonth.push(declinedApplicationsInMonth.length);
+   
+     const approvedApplicationsInMonth = applications.filter((application) => {
+       const createdAt = new Date(application.sendDate);
+       const monthOfSendDate = createdAt.getMonth();
+       return (
+         monthOfSendDate === month &&
+         application.status === 'approved'
+       );
+     });
+     approvedApplicationsByMonth.push(approvedApplicationsInMonth.length);
+
+     const sentApplicationsInMonth = applications.filter((application) => {
+      const createdAt = new Date(application.sendDate);
+      const monthOfSendDate = createdAt.getMonth();
+      return (
+        monthOfSendDate === month &&
+        application.status === 'sent'
+      );
+    });
+    sentApplicationsByMonth.push(sentApplicationsInMonth.length);
+   }
+
+
+   function compareMonths() {
+      const difference = applicationByMonth[getMonthThisMonth() - 1] - applicationByMonth[(getMonthThisMonth() - 2)];
+      let result = '';
+      if (difference > 0) {
+        const c = difference;
+        result = <Typography.Text>Nhiều hơn tháng trước {<span className="bnb2">+{c}</span>}</Typography.Text>;
+      } else if (difference < 0) {
+         const c = difference;
+         result = <Typography.Text>Ít hơn tháng trước <span style={{color: 'red'}}>{c}</span></Typography.Text>;
+      } else {
+         result = <Typography.Text>Bằng tháng trước</Typography.Text>;
+      }
+      return result;
+    }  
+
+   function sum(numbers) {
+      let total = 0;
+      for (const number of numbers) {
+        total += number;
+      }
+      return total;
+    }
+    
+
+   const stackedBarChart = {
+      series: [{
+         name: 'Đã gửi',
+         data: sentApplicationsByMonth
+      }, {
+         name: 'Phỏng vấn',
+         data: interviewApplicationsByMonth
+      }, {
+         name: 'Nhân việc',
+         data: approvedApplicationsByMonth
+      }, {
+         name: 'Từ chối',
+         data: declinedApplicationsByMonth
+      }],
+
+      options: {
+         chart: {
+            type: "bar",
+            width: "100%",
+            height: "auto",
+            stacked: true,
+
+            toolbar: {
+               show: true,
+            },
+         },
+         plotOptions: {
+            bar: {
+            horizontal: false,
+            columnWidth: "55%",
+            borderRadius: 5,
+          },
+        },
+        dataLabels: {
+          enabled: true,
+          enabledOnSeries: [2],
+          offsetY: 20,
+          formatter: function (_val, opt) {
+            let series = opt.w.config.series
+            let idx = opt.dataPointIndex
+            const total = series.reduce((total, self) => total + self.data[idx], 0)
+            return total
+          },
+          style: {
+            colors: ["#000"]
+          }
+        },
+        stroke: {
+          show: true,
+          width: 1,
+          colors: ["transparent"],
+        },
+        grid: {
+          show: true,
+          borderColor: "#ccc",
+          strokeDashArray: 2,
+        },
+        xaxis: {
+          categories: [
+            "T1",
+            "T2",
+            "T3",
+            "T4",
+            "T5",
+            "T6",
+            "T7",
+            "T8",
+            "T9",
+            "T10",
+            "T11",
+            "T12",
+          ],
+          labels: {
+            show: true,
+            align: "right",
+            minWidth: 0,
+            maxWidth: 160,
+            style: {
+              colors: [
+                "#000",
+                "#000",
+                "#000",
+                "#000",
+                "#000",
+                "#000",
+                "#000",
+                "#000",
+                "#000",
+                "#000",
+                "#000",
+                "#000",
+              ],
+            },
+          },
+        },
+        yaxis: {
+          labels: {
+            show: true,
+            align: "right",
+            minWidth: 0,
+            maxWidth: 160,
+            style: {
+              colors: [
+                "#000",
+                "#000",
+                "#000",
+                "#000",
+                "#000",
+                "#fff",
+                "#fff",
+                "#fff",
+                "#fff",
+                "#fff",
+                "#000",
+                "#000",
+              ],
+            },
+          },
+        },
+    
+        tooltip: {
+          y: {
+            formatter: function (val) {
+              return val + "đơn";
+            },
+          },
+        },
+      },
+    };
    const items = [
       {
-         Amount: "223",
-         status: "Gửi đi",
+         Amount: sum(sentApplicationsByMonth),
+         status: "Đã gửi",
       },
       {
-         Amount: "128",
-         status: "Từ chối",
-      },
-      {
-         Amount: "75",
+         Amount: sum(interviewApplicationsByMonth),
          status: "Phỏng vấn",
       },
       {
-         Amount: "50",
+         Amount: sum(approvedApplicationsByMonth),
          status: "Chấp thuận",
+      },
+      {
+         Amount: sum(declinedApplicationsByMonth),
+         status: "Từ chối",
       },
    ];
 
@@ -36,9 +251,9 @@ function StackedBarChart() {
             />
          </div>
          <div className="chart-vistior">
-            <Title level={5}>Tổng đơn ứng tuyển</Title>
+            <Title level={5}>Tổng đơn ứng tuyển tháng {getMonthThisMonth()}</Title>
             <Paragraph className="lastweek">
-               hơn tháng trước <span className="bnb2">+36</span>
+               {compareMonths()} 
             </Paragraph>
             <Row gutter>
                {items.map((v, index) => (
