@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import {
   Layout,
   Button,
@@ -8,7 +8,11 @@ import {
   Form,
   Input,
   Switch,
+  notification,
 } from 'antd';
+import { post } from 'utils/APICaller';
+import useAuthActions from 'recoil/action';
+import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 function onChange(checked) {
   console.log(`switch to ${checked}`);
 }
@@ -16,13 +20,35 @@ const { Title } = Typography;
 const { Header, Footer, Content } = Layout;
 
 export default function SignIn() {
+  const { login } = useAuthActions();
+
+  const history = useHistory();
+
   const onFinish = (values) => {
-    console.log('Success:', values);
+    post({
+      endpoint: `/accounts/login`,
+      body: {
+        email: values.email,
+        password: values.password,
+      },
+    })
+      .then((res) => {
+        login(res.data.token);
+
+        notification.success({
+          message: 'Đăng nhập thành công',
+        });
+
+        history.push('/dashboard');
+      })
+      .catch((error) => {
+        notification.error({
+          message: error.response.data.message,
+        });
+      });
   };
 
-  const onFinishFailed = (errorInfo) => {
-    console.log('Failed:', errorInfo);
-  };
+  const onFinishFailed = (errorInfo) => {};
   return (
     <>
       <Layout className='layout-default layout-signin'>
@@ -33,11 +59,7 @@ export default function SignIn() {
         </Header>
         <Content className='signin'>
           <Row justify='space-around'>
-            <Col
-              xs={{ span: 24, offset: 0 }}
-              lg={{ span: 6, offset: 0 }}
-              md={{ span: 12 }}
-            >
+            <Col xs={{ span: 24 }} md={{ span: 10 }}>
               <Title className='mb-15'>Đăng nhập</Title>
               <Title className='font-regular text-muted' level={5}>
                 Nhập tài khoản và mật khẩu để đăng nhập
@@ -73,7 +95,7 @@ export default function SignIn() {
                     },
                   ]}
                 >
-                  <Input placeholder='Mật khẩu' />
+                  <Input type='password' placeholder='Mật khẩu' />
                 </Form.Item>
 
                 <Form.Item
