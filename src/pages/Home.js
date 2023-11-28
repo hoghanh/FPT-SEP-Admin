@@ -1,12 +1,9 @@
 import { useEffect, useState } from 'react';
-
 import { Card, Col, Row, Typography, List, Avatar, Space, notification, Pagination } from 'antd';
-import { MinusOutlined, PlusOutlined } from '@ant-design/icons';
-
+import { PlusOutlined } from '@ant-design/icons';
 import Echart from '../components/chart/EChart';
 import LineChart from '../components/chart/LineChart';
 import StackedBarChart from '../components/chart/StackedBarChart';
-
 import {
   Documents,
   Edit,
@@ -14,10 +11,10 @@ import {
   User,
   Money,
 } from '../components/icon/Icon';
-
 import JobItem from '../components/job/JobItem';
 import { get } from 'utils/APICaller';
-import { FormatVND, formatDate, formatDateTime } from 'components/formatter/format';
+import { FormatVND, formatDateTime } from 'components/formatter/format';
+import { Link } from 'react-router-dom';
 
 function Home() {
   const { Title, Text } = Typography;
@@ -80,9 +77,9 @@ function Home() {
         notification.error({
           message: error.response.data.message,
         });
-    });
+      });
   }, [limit, page]);
- 
+
 
 
   const count = [
@@ -103,7 +100,7 @@ function Home() {
     },
     {
       today: 'Doanh thu',
-      title: `${FormatVND(totalRevenue ,'')}`,
+      title: `${FormatVND(totalRevenue, '')}`,
       per: 'VND',
       icon: <Money size={46} />,
       bnb: "bnb3",
@@ -137,22 +134,22 @@ function Home() {
     textclass: 'text-fill',
     amountcolor: 'text-success',
   }));
-    
-  
+
+
 
   const onChange = (pageNumber) => {
     setPage(pageNumber);
-};
+  };
 
-const getPagedList = () => {
-  const start = (page - 1) * limit;
-  const end = start + limit;
-  return jobList?.slice(start, end);
-};
+  const getPagedList = () => {
+    const start = (page - 1) * limit;
+    const end = start + limit;
+    return jobList?.slice(start, end);
+  };
 
   const fee = '10,000';
 
- 
+
   return (
     <>
       <div className='layout-content'>
@@ -214,7 +211,7 @@ const getPagedList = () => {
                 </Space>
               }
             >
-              <LineChart revenue={revenue}/>
+              <LineChart revenue={revenue} />
             </Card>
           </Col>
         </Row>
@@ -251,7 +248,7 @@ const getPagedList = () => {
           <Col xs={24} sm={24} md={12} lg={12} xl={8} className='mb-24'>
             <Card bordered={false} className='criclebox h-full'>
               <div className='timeline-box'>
-                <Title level={5}>Giao dịch gần đây</Title>
+                <Link to='/billing'><Title level={5}>Giao dịch gần đây</Title></Link>
                 <List
                   className='transactions-list ant-newest'
                   itemLayout='horizontal'

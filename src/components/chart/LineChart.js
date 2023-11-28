@@ -31,9 +31,6 @@ function LineChart({revenue}) {
     revenuesByMonth.push(totalRevenueForMonth);
   }
 
- 
-  console.log(revenuesByMonth)
-
   const lineChart = {
     series: [
       {

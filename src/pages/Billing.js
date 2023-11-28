@@ -6,7 +6,8 @@ import {
   Avatar,
   Table,
   Space,
-  notification
+  notification,
+  Radio
 } from "antd";
 import {
   PlusOutlined,
@@ -17,61 +18,14 @@ import {
   Money,
   Transactions,
   Deposit,
-  Calender,
   Edit,
 } from "../components/icon/Icon";
 import LineChart from "../components/chart/LineChart";
 import { useEffect, useState } from "react";
 import { get } from "utils/APICaller";
-import { FormatVND } from "components/formatter/format";
+import { FormatVND, formatDateTime } from "components/formatter/format";
 
 const { Title } = Typography;
-
-
-const payments = [
-  {
-    "id": 1,
-    "name": "VNP14136772",
-    "description": "Thanh+toan+cho+ma+GD%3A09161839",
-    "amount": 10000,
-    "type": "-",
-    "status": "1",
-    "orderId": "24130914",
-    "transDate": "20231024131004",
-    "transType": "02",
-    "createdAt": "2023-11-14T12:53:05.000Z",
-    "updatedAt": "2023-11-14T12:53:07.000Z",
-    "clientId": 1
-  },
-  {
-    "id": 2,
-    "name": "VNP14136772",
-    "description": "Thanh+toan+cho+ma+GD%3A09161839",
-    "amount": 10000,
-    "type": "+",
-    "status": "1",
-    "orderId": "24130914",
-    "transDate": "20231024131004",
-    "transType": "02",
-    "createdAt": "2023-11-14T12:53:18.000Z",
-    "updatedAt": "2023-11-14T12:53:18.000Z",
-    "clientId": 1
-  },
-  {
-    "id": 3,
-    "name": "VNP14136772",
-    "description": "Thanh+toan+cho+ma+GD%3A09161839",
-    "amount": 10000,
-    "type": "+",
-    "status": "1",
-    "orderId": "24130914",
-    "transDate": "20231024131004",
-    "transType": "02",
-    "createdAt": "2023-11-14T12:54:28.000Z",
-    "updatedAt": "2023-11-14T12:54:30.000Z",
-    "clientId": 1
-  }
-]
 
 const columns = [
   {
@@ -95,11 +49,14 @@ const columns = [
   {
     title: 'Chi tiết',
     dataIndex: "description",
+    key: "description",
+    render: (_, record) =>{<Typography.Paragraph>{record.description}</Typography.Paragraph>}
   },
   {
     title: 'Biến động',
     dataIndex: "amount",
     sorter: (a, b) => a.amount - b.amount,
+    // render: (amount) =>{<span className="bnb2">{amount}</span>}
   },
   {
     title: 'Người dùng',
@@ -116,6 +73,7 @@ function Billing() {
   const [deposit, setDeposit] = useState([]);
   const [totalDeposit, setTotalDeposit] = useState(0);
   const [amountDeposit, setAmountDeposit] = useState(0);
+  const [option, setOption] = useState();
 
   useEffect(() => {
     get({ endpoint: `/payment/revenue` })
@@ -133,7 +91,7 @@ function Billing() {
       get({ endpoint: `/payment/deposit` })
       .then((res) => {
         const data = res.data;
-        setRevenue(data.payments)
+        setDeposit(data.payments)
         setTotalDeposit(data.deposit);
         setAmountDeposit(data.total)
 
@@ -173,6 +131,68 @@ const count = [
     bnb: 'bnb3',
   },
 ];
+
+const onChange = (e) => {
+  setOption(e.target.value);
+};
+
+
+const columns = [
+  {
+    title: 'Loại',
+    dataIndex: "type",
+    width: '5%',
+    key: "type",
+    fixed: 'left',
+    render: (type) => type === "+" ?
+      <Avatar size="small" className="text-fill">
+        <PlusOutlined />
+      </Avatar>
+      :
+      <Avatar size="small" className="text-light-danger">
+        <MinusOutlined />
+      </Avatar>
+  },
+  {
+    title: 'Ngày giao dịch',
+    dataIndex: "createdAt",
+    width: '20%',
+    fixed: 'left',
+    sorter: (a, b) => new Date(b.date) - new Date(a.date),
+    render: (_, record) => {
+      return <Typography.Paragraph>{formatDateTime(record.createdAt)}</Typography.Paragraph>
+    },
+  },
+  {
+    title: 'Tài khoản',
+    dataIndex: "clients",
+    key: "clients",
+    fixed: 'left',   
+    width: '18%',
+    ellipsis: true,
+    render: (_, record) => {
+      return <Typography.Paragraph>{record.clients?.accounts.name}</Typography.Paragraph>
+    },
+  },
+  {
+    title: 'Chi tiết',
+    dataIndex: "description",
+    key: "description",
+    ellipsis: true,
+    render: (_, record) => {
+      return <Typography.Paragraph>{record?.description}</Typography.Paragraph>
+    },
+  },
+  {
+    title: 'Biến động',
+    dataIndex: "amount",
+    width: '10%',
+    fixed: 'right',   
+    sorter: (a, b) => a.amount - b.amount,
+    render: (_, record) =>{return <span className="bnb2">{FormatVND(record.amount, '')}</span>}
+  },
+];
+
 
   return (
     <>
@@ -246,12 +266,20 @@ const count = [
               <Card
                 bordered={false}
                 className="criclebox tablespace mb-24"
-                title="Các Giao dịch"
+                title="Danh sách giao dịch"
+                extra={
+                  <>
+                     <Radio.Group onChange={onChange} defaultValue="revenue">
+                        <Radio.Button value="revenue">Doanh thu</Radio.Button>
+                        <Radio.Button value="deposit">Nạp tiền</Radio.Button>
+                     </Radio.Group>
+                  </>
+               }
               >
                 <div className="table-responsive">
                   <Table
                     columns={columns}
-                    dataSource={payments}
+                    dataSource={option === 'revenue' ? revenue : deposit}
                     pagination={true}
                     className="ant-border-space"
                   />

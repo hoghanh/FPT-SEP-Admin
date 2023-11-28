@@ -1,12 +1,27 @@
 import { NavLink } from 'react-router-dom';
-import { Typography, Avatar, Descriptions, Row, Col, Divider } from "antd";
-import { Trash } from "../icon/Icon";
+import { Typography, Avatar, Row, Col, Divider } from "antd";
+import { formatDate } from 'components/formatter/format';
 
 const { Title, Text } = Typography;
 const { Group } = Avatar
 const face2 = "https://firebasestorage.googleapis.com/v0/b/fpt-sep-fe-eb227.appspot.com/o/images%2Favatars%2Fapricot.jpg?alt=media&token=bb762da7-2a30-4b81-be24-a7ec528f45d5"
 
-function ApplicationItem() {
+function ApplicationItem({application}) {
+
+   const checkStatus = (status)=>{
+      let output ='';
+      if(status === 'sent'){
+         output = <span style={{color: '#008ffb'}}>Đã gửi</span>
+      } else if(status === 'interview'){
+         output = <span style={{color: '#00e396'}}>Phỏng vấn</span>
+      } else if(status === 'approved'){
+         output = <span style={{color: '#feb019'}}>Nhận việc</span>
+      } else if(status === 'interview'){
+         output = <span style={{color: '#ff4560'}}>Từ chối</span>
+      } 
+      return output;
+   }
+
    return (
       <>
          <Row style={{ padding: "10px 20px" }}>
@@ -20,10 +35,10 @@ function ApplicationItem() {
                      <Avatar
                         className="shape-avatar"
                         size={40}
-                        src={face2}
+                        src={application?.freelancers.accounts.image}
                      />
                      <div className="avatar-info">
-                        <Title level={4}>Cao Hong Hanh</Title>
+                        <Title level={4}>{application?.freelancers.accounts.name}</Title>
                      </div>
                   </Group>
                </NavLink>
@@ -32,33 +47,24 @@ function ApplicationItem() {
                <NavLink
                   to="/jobDetail"
                >
-                  <Row>
-                     <Col>
-                        <Title style={{ margin: 0 }} level={5}>
-                           Công việc:
-                        </Title>
-                     </Col>
-                     <Col>
-                        <Title level={5} style={{ margin: 0, marginLeft: 10 }} >
-                           Javascript expert with Next.js and React.js expertise
-                        </Title>
-                     </Col>
-                  </Row>
+                  <Title level={5} style={{ margin: 0 }} >
+                     Javascript expert with Next.js and React.js expertise
+                  </Title>
+
                </NavLink>
             </Col>
             <Col span={24}>
-               <Descriptions>
-                  <Descriptions.Item label="Ngày gửi">
-                     <Text level={4}>
-                        19/23/45
-                     </Text>
-                  </Descriptions.Item>
-                  <Descriptions.Item label="Trạng thái">
-                     <Text level={4}>
-                        Declined
-                     </Text>
-                  </Descriptions.Item>
-               </Descriptions>
+               <Text level={5} style={{ margin: 0 }} ellipsis>
+                  {application?.description}
+               </Text>
+            </Col>
+            <Col span={24} style={{ display: 'flex', justifyContent: 'space-between' }}>
+               <Text>
+                  Ngày gửi: {formatDate(application.sendDate)}
+               </Text>
+               <Text>
+                  Trạng thái: {checkStatus(application.status)}
+               </Text>
             </Col>
          </Row>
          <Divider />
