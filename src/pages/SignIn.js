@@ -12,7 +12,7 @@ import {
 } from 'antd';
 import { post } from 'utils/APICaller';
 import useAuthActions from 'recoil/action';
-import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
+import { useHistory } from 'react-router-dom';
 function onChange(checked) {
   console.log(`switch to ${checked}`);
 }
