@@ -8,58 +8,89 @@ import {
   Input,
   Avatar,
   notification,
+  Modal,
 } from 'antd';
 
 import { SearchOutlined } from '@ant-design/icons';
 import { useEffect, useState } from 'react';
 import { get, put, remove } from 'utils/APICaller';
 import { Link } from 'react-router-dom/cjs/react-router-dom';
+import { ExclamationCircleFilled } from '@ant-design/icons';
+
 
 const { Title } = Typography;
+const { confirm } = Modal;
 
 function Accounts() {
   const [searchTerm, setSearchTerm] = useState('');
   const [dataUser, setDataUser] = useState([]);
+  const [flag, setFlag] = useState(true);
 
   useEffect(() => {
+    console.log('heko')
     get({ endpoint: `/accounts/` })
       .then((res) => {
         setDataUser(res.data);
+        setFlag(true);
       })
       .catch((err) => {
         notification.error({
           message: err.response.data.message,
         });
       });
-  }, [dataUser]);
+  }, [flag]);
 
   const handleClick = (id, status) => {
     if (status) {
-      remove({ endpoint: `/freelancer/profile/${id}` })
-        .then((res) => {
-          notification.success({
-            message: 'Tài khoản đã bị khoá',
+      confirm({
+        title: 'Cảnh báo!',
+        icon: <ExclamationCircleFilled />,
+        content: 'Bạn chắc chắn muốn khóa tài khoản này?',
+        okText: 'Khóa',
+        okType: 'danger',
+        cancelText: 'Hủy',
+        onOk() { removeItem(id) },
+      });
+      function removeItem(id) {
+        remove({ endpoint: `/accounts/profile/${id}` })
+          .then((res) => {
+            notification.success({
+              message: res.data,
+            });
+            setFlag(false);
+          })
+          .catch((error) => {
+            notification.error({
+              message: 'Có lỗi xảy ra trong quá trình khóa',
+            });
           });
-        })
-        .catch((error) => {
-          notification.error({
-            message: 'Có lỗi xảy ra trong quá trình xoá',
-          });
-        });
+      }
     } else {
-      put({ endpoint: `/freelancer/active/${id}` })
-        .then((res) => {
-          notification.success({
-            message: 'Tài khoản đã được kích hoạt',
+      confirm({
+        title: 'Cảnh báo!',
+        icon: <ExclamationCircleFilled />,
+        content: 'Bạn chắc chắn muốn kích hoạt tài khoản này?',
+        okText: 'Kích hoạt',
+        okType: 'danger',
+        cancelText: 'Hủy',
+        onOk() { activeItem(id) },
+      });
+      function activeItem(id) {
+        put({ endpoint: `/accounts/active/${id}` })
+          .then((res) => {
+            notification.success({
+              message: res.data,
+            });
+            setFlag(false);
+          })
+          .catch((error) => {
+            notification.error({
+              message: 'Có lỗi xảy ra! Vui lòng thử lại',
+            });
           });
-        })
-        .catch((error) => {
-          notification.error({
-            message: 'Có lỗi xảy ra! Vui lòng thử lại',
-          });
-        });
-    }
-  };
+      }
+    };
+  }
 
   const filteredData = dataUser?.filter((item) =>
     item.name.toLowerCase().includes(searchTerm.toLowerCase())
@@ -69,6 +100,7 @@ function Accounts() {
     {
       title: 'Người dùng',
       dataIndex: 'image',
+      key: 'image',
       width: '30%',
       ellipsis: true,
       render: (text, record) => {
@@ -93,10 +125,12 @@ function Accounts() {
     {
       title: 'Số điện thoại',
       dataIndex: 'phone',
+      key: 'phone',
     },
     {
       title: 'Địa chỉ',
       dataIndex: 'address',
+      key: 'address',
       ellipsis: true,
     },
     {
@@ -116,9 +150,9 @@ function Accounts() {
       onFilter: (value, record) => record.role === value,
       render: (text, record) => {
         if (record.role === 'freelancer') {
-          return <span>Freelancer</span>;
+          return <span key={record.id}>Freelancer</span>;
         } else if (record.role === 'client') {
-          return <span>Doanh nghiệp đối tác</span>;
+          return <span key={record.id}>Doanh nghiệp đối tác</span>;
         } else {
           return text;
         }

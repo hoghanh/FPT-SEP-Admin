@@ -7,7 +7,8 @@ import {
   Table,
   Space,
   notification,
-  Radio
+  Radio,
+  Modal, Form, InputNumber,
 } from "antd";
 import {
   PlusOutlined,
@@ -22,49 +23,10 @@ import {
 } from "../components/icon/Icon";
 import LineChart from "../components/chart/LineChart";
 import { useEffect, useState } from "react";
-import { get } from "utils/APICaller";
+import { get, put } from "utils/APICaller";
 import { FormatVND, formatDateTime } from "components/formatter/format";
 
 const { Title } = Typography;
-
-const columns = [
-  {
-    title: 'Loại',
-    dataIndex: "type",
-    key: "type",
-    render: (type) => type === "+" ?
-      <Avatar size="small" className="text-fill">
-        <PlusOutlined />
-      </Avatar>
-      :
-      <Avatar size="small" className="text-light-danger">
-        <MinusOutlined />
-      </Avatar>
-  },
-  {
-    title: 'Ngày giao dịch',
-    dataIndex: "createdAt",
-    sorter: (a, b) => new Date(b.date) - new Date(a.date),
-  },
-  {
-    title: 'Chi tiết',
-    dataIndex: "description",
-    key: "description",
-    render: (_, record) =>{<Typography.Paragraph>{record.description}</Typography.Paragraph>}
-  },
-  {
-    title: 'Biến động',
-    dataIndex: "amount",
-    sorter: (a, b) => a.amount - b.amount,
-    // render: (amount) =>{<span className="bnb2">{amount}</span>}
-  },
-  {
-    title: 'Người dùng',
-    dataIndex: "clientId",
-  }
-];
-
-const fee = '10,000';
 
 function Billing() {
   const [revenue, setRevenue] = useState([]);
@@ -74,6 +36,9 @@ function Billing() {
   const [totalDeposit, setTotalDeposit] = useState(0);
   const [amountDeposit, setAmountDeposit] = useState(0);
   const [option, setOption] = useState();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [fee, setFee] = useState(0);
+  const [form] = Form.useForm();
 
   useEffect(() => {
     get({ endpoint: `/payment/revenue` })
@@ -88,7 +53,7 @@ function Billing() {
           message: error.response.data.message,
         });
       });
-      get({ endpoint: `/payment/deposit` })
+    get({ endpoint: `/payment/deposit` })
       .then((res) => {
         const data = res.data;
         setDeposit(data.payments)
@@ -103,95 +68,149 @@ function Billing() {
       });
   }, []);
 
+  useEffect(() => {
+    get({ endpoint: `/systemValue/fee` })
+      .then((res) => {
+        setFee(res.data.value)
+      })
+      .catch((error) => {
+        notification.error({
+          message: error.response.data.message,
+        });
+      });
+  }, [fee]);
 
-  
-const count = [
-  {
-    today: 'Tổng giao dịch',
-    title: `${amountRevenue}`,
-    icon: <Transactions size={46} />,
-  },
-  {
-    today: 'Tổng doanh Thu',
-    title: `${FormatVND(totalRevenue ,'')}`,
-    persent: 'VND',
-    icon: <Money size={46} />,
-    bnb: 'bnb3',
-  },
-  {
-    today: 'Số lần nạp tiền',
-    title: `${amountDeposit}`,
-    icon: <Deposit size={38} />,
-  },
-  {
-    today: 'Tổng tiền nạp vào',
-    title: `${FormatVND(totalDeposit ,'')}`,
-    persent: 'VND',
-    icon: <Money size={46} />,
-    bnb: 'bnb3',
-  },
-];
+  const showModal = () => {
+    setIsModalOpen(true);
+  };
 
-const onChange = (e) => {
-  setOption(e.target.value);
-};
+  const handleOk = () => {
+    form
+      .validateFields()
+      .then((values) => {
+        put({
+          endpoint: `/systemValue/fee`, body: {
+            value: values.amount,
+          }
+        })
+          .then((res) => {
+            console.log(res.data.message)
+            notification.success({
+              message: res.data.message,
+            });
+            setFee(values.amount)
+            setIsModalOpen(false);
+          })
+          .catch((error) => {
+            notification.error({
+              message: error.response.data.message,
+            });
+          });
+      })
+      .catch((error) => {
+        console.error('Validation failed:', error);
+      });
+  };
+
+  const handleCancel = () => {
+    setIsModalOpen(false);
+  }
+
+  const validateAmount = (rule, value) => {
+    if (value && value < 10000) {
+      return Promise.reject('Số tiền tối thiểu là 10000');
+    }
+    return Promise.resolve();
+  };
 
 
-const columns = [
-  {
-    title: 'Loại',
-    dataIndex: "type",
-    width: '5%',
-    key: "type",
-    fixed: 'left',
-    render: (type) => type === "+" ?
-      <Avatar size="small" className="text-fill">
-        <PlusOutlined />
-      </Avatar>
-      :
-      <Avatar size="small" className="text-light-danger">
-        <MinusOutlined />
-      </Avatar>
-  },
-  {
-    title: 'Ngày giao dịch',
-    dataIndex: "createdAt",
-    width: '20%',
-    fixed: 'left',
-    sorter: (a, b) => new Date(b.date) - new Date(a.date),
-    render: (_, record) => {
-      return <Typography.Paragraph>{formatDateTime(record.createdAt)}</Typography.Paragraph>
+  const count = [
+    {
+      today: 'Tổng giao dịch',
+      title: `${amountRevenue}`,
+      icon: <Transactions size={46} />,
     },
-  },
-  {
-    title: 'Tài khoản',
-    dataIndex: "clients",
-    key: "clients",
-    fixed: 'left',   
-    width: '18%',
-    ellipsis: true,
-    render: (_, record) => {
-      return <Typography.Paragraph>{record.clients?.accounts.name}</Typography.Paragraph>
+    {
+      today: 'Tổng doanh Thu',
+      title: `${FormatVND(totalRevenue, '')}`,
+      persent: 'VND',
+      icon: <Money size={46} />,
+      bnb: 'bnb3',
     },
-  },
-  {
-    title: 'Chi tiết',
-    dataIndex: "description",
-    key: "description",
-    ellipsis: true,
-    render: (_, record) => {
-      return <Typography.Paragraph>{record?.description}</Typography.Paragraph>
+    {
+      today: 'Số lần nạp tiền',
+      title: `${amountDeposit}`,
+      icon: <Deposit size={38} />,
     },
-  },
-  {
-    title: 'Biến động',
-    dataIndex: "amount",
-    width: '10%',
-    fixed: 'right',   
-    sorter: (a, b) => a.amount - b.amount,
-    render: (_, record) =>{return <span className="bnb2">{FormatVND(record.amount, '')}</span>}
-  },
-];
+    {
+      today: 'Tổng tiền nạp vào',
+      title: `${FormatVND(totalDeposit, '')}`,
+      persent: 'VND',
+      icon: <Money size={46} />,
+      bnb: 'bnb3',
+    },
+  ];
+
+  const onChange = (e) => {
+    setOption(e.target.value);
+  };
+
+
+  const columns = [
+    {
+      title: 'Loại',
+      dataIndex: "type",
+      width: '5%',
+      key: "type",
+      fixed: 'left',
+      render: (type) => type === "+" ?
+        <Avatar size="small" className="text-fill">
+          <PlusOutlined />
+        </Avatar>
+        :
+        <Avatar size="small" className="text-light-danger">
+          <MinusOutlined />
+        </Avatar>
+    },
+    {
+      title: 'Ngày giao dịch',
+      dataIndex: "createdAt",
+      width: '20%',
+      fixed: 'left',
+      sorter: (a, b) => new Date(b.date) - new Date(a.date),
+      render: (_, record) => {
+        return <Typography.Paragraph>{formatDateTime(record.createdAt)}</Typography.Paragraph>
+      },
+    },
+    {
+      title: 'Tài khoản',
+      dataIndex: "clients",
+      key: "clients",
+      fixed: 'left',
+      width: '18%',
+      ellipsis: true,
+      render: (_, record) => {
+        return <Typography.Paragraph>{record.clients?.accounts.name}</Typography.Paragraph>
+      },
+    },
+    {
+      title: 'Chi tiết',
+      dataIndex: "description",
+      key: "description",
+      ellipsis: true,
+      render: (_, record) => {
+        return <Typography.Paragraph>{record?.description}</Typography.Paragraph>
+      },
+    },
+    {
+      title: 'Biến động',
+      dataIndex: "amount",
+      width: '10%',
+      fixed: 'right',
+      sorter: (a, b) => a.amount - b.amount,
+      render: (_, record) => { return <span className="bnb2">{FormatVND(record.amount, '')}</span> }
+    },
+  ];
 
 
   return (
@@ -249,13 +268,31 @@ const columns = [
               extra={
                 <Space size={"large"}>
                   <p className="bnb3" style={{ margin: 0 }}>
-                    Phí: <span className="bnb2"> {fee} </span>
+                    Phí: <span className="bnb2"> {FormatVND(fee)} </span>
                   </p>
-                  <Edit size={17} />
+                  <div style={{ cursor: 'pointer' }} onClick={showModal}><Edit size={17} /></div>
                 </Space>
               }
             >
               <LineChart revenue={revenue} />
+              <Modal title="Phí dịch vụ" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
+                <Form form={form} name='inputMoney'>
+                  <Form.Item
+                    name='amount'
+                    rules={[
+                      {
+                        required: true,
+                        message: 'Không được để trống ô này!',
+                      },
+                      {
+                        validator: validateAmount,
+                      },
+                    ]}
+                  >
+                    <InputNumber style={{ width: '100%' }} step={10000} placeholder='10000' />
+                  </Form.Item>
+                </Form>
+              </Modal>
             </Card>
           </Col>
         </Row>
@@ -269,12 +306,12 @@ const columns = [
                 title="Danh sách giao dịch"
                 extra={
                   <>
-                     <Radio.Group onChange={onChange} defaultValue="revenue">
-                        <Radio.Button value="revenue">Doanh thu</Radio.Button>
-                        <Radio.Button value="deposit">Nạp tiền</Radio.Button>
-                     </Radio.Group>
+                    <Radio.Group onChange={onChange} defaultValue="revenue">
+                      <Radio.Button value="revenue">Doanh thu</Radio.Button>
+                      <Radio.Button value="deposit">Nạp tiền</Radio.Button>
+                    </Radio.Group>
                   </>
-               }
+                }
               >
                 <div className="table-responsive">
                   <Table

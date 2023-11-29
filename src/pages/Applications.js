@@ -8,6 +8,7 @@ function Applications() {
   const [totalApplications, setTotalApplications] = useState(0);
   const [limit, setLimit] = useState(10);
   const [page, setPage] = useState(1);
+  const [sortOption, setSortOption] = useState('all');
 
   useEffect(() => {
     get({ endpoint: `/application/` })
@@ -21,16 +22,39 @@ function Applications() {
           message: error.response.data.message,
         });
       });
-  }, []);
+  }, [page]);
 
   const onChange = (pageNumber) => {
     setPage(pageNumber);
   };
 
+  const onChangeOption = (e) => {
+    setSortOption(e.target.value);
+  };
+
+  let sortedJobList = [...applications];
+
+  if (sortOption === 'all') {
+    sortedJobList.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
+  } else if (sortOption === 'sent') {
+    sortedJobList = sortedJobList.filter(item => item.status === 'sent');
+    sortedJobList.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
+  } else if (sortOption === 'interview') {
+    sortedJobList = sortedJobList.filter(item => item.status === 'interview');
+    sortedJobList.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
+  } else if (sortOption === 'approved') {
+    sortedJobList = sortedJobList.filter(item => item.status === 'approved');
+    sortedJobList.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
+  } else if (sortOption === 'declined') {
+    sortedJobList = sortedJobList.filter(item => item.status === 'declined');
+    sortedJobList.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
+  }
+  
+
   const getPagedList = () => {
     const start = (page - 1) * limit;
     const end = start + limit;
-    return applications?.slice(start, end);
+    return sortedJobList?.slice(start, end);
   };
 
 
@@ -44,23 +68,24 @@ function Applications() {
               className='criclebox tablespace mb-24'
               bodyStyle={{ marginTop: '10px' }}
               title='Đơn Ứng tuyển'
-              // extra={
-              //   <>
-              //     <Radio.Group onChange={onChange} defaultValue='all'>
-              //       <Radio.Button value='sent'>Đã gửi</Radio.Button>
-              //       <Radio.Button value='interview'>Phỏng vấn</Radio.Button>
-              //       <Radio.Button value='declined'>Đã từ chối</Radio.Button>
-              //       <Radio.Button value='approve'>Đã tuyển</Radio.Button>
-              //     </Radio.Group>
-              //   </>
-              // }
+              extra={
+                <>
+                  <Radio.Group onChange={onChangeOption} defaultValue='all'>
+                    <Radio.Button value='all'>Tất cả</Radio.Button>
+                    <Radio.Button value='sent'>Đã gửi</Radio.Button>
+                    <Radio.Button value='interview'>Phỏng vấn</Radio.Button>
+                    <Radio.Button value='approved'>Nhận việc</Radio.Button>
+                    <Radio.Button value='declined'>Từ chối</Radio.Button>
+                  </Radio.Group>
+                </>
+              }
             >
               <Row style={{ width: '100%' }}>
                 {getPagedList()?.map((application) => { return <Col span={24} key={application.id}><ApplicationItem application={application} /></Col> })}
                 <Col span={24}>
                 <Pagination
                   current={page}
-                  total={totalApplications}
+                  total={sortedJobList.length}
                   onChange={onChange}
                   pageSize={limit}
                   showSizeChanger={false}

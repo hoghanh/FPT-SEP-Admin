@@ -82,7 +82,6 @@ function ClientProfile() {
    useEffect(() => {
       get({ endpoint: `/client/profile/${accountId}` })
          .then((res) => {
-            console.log(res.data)
             setUser(res.data);
             get({ endpoint: `/job/client/1` })
                .then((res) => {

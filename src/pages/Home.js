@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Card, Col, Row, Typography, List, Avatar, Space, notification, Pagination } from 'antd';
+import { Card, Col, Row, Typography, List, Avatar, Space, notification, Pagination, Modal, Form, InputNumber } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import Echart from '../components/chart/EChart';
 import LineChart from '../components/chart/LineChart';
@@ -12,7 +12,7 @@ import {
   Money,
 } from '../components/icon/Icon';
 import JobItem from '../components/job/JobItem';
-import { get } from 'utils/APICaller';
+import { get, put } from 'utils/APICaller';
 import { FormatVND, formatDateTime } from 'components/formatter/format';
 import { Link } from 'react-router-dom';
 
@@ -28,6 +28,9 @@ function Home() {
   const [totalUsers, setTotalUser] = useState(0);
   const [totalApplications, setTotalApplications] = useState(0);
   const [totalRevenue, setTotalRevenue] = useState(0);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [fee, setFee] = useState(0);
+  const [form] = Form.useForm();
 
   useEffect(() => {
     get({ endpoint: `/application/` })
@@ -80,7 +83,53 @@ function Home() {
       });
   }, [limit, page]);
 
+  useEffect(() => {
+    get({ endpoint: `/systemValue/fee` })
+      .then((res) => {
+        setFee(res.data.value)
+      })
+      .catch((error) => {
+        notification.error({
+          message: error.response.data.message,
+        });
+      });
+  }, [fee]);
 
+  const showModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleOk = () => {
+    form
+      .validateFields()
+      .then((values) => {
+        put({
+          endpoint: `/systemValue/fee`, body: {
+            value: values.amount,
+          }
+        })
+          .then((res) => {
+            console.log(res.data.message)
+            notification.success({
+              message: res.data.message,
+            });
+            setFee(values.amount)
+            setIsModalOpen(false);
+          })
+          .catch((error) => {
+            notification.error({
+              message: error.response.data.message,
+            });
+          });
+      })
+      .catch((error) => {
+        console.error('Validation failed:', error);
+      });
+  };
+
+  const handleCancel  = () => {
+    setIsModalOpen(false);
+  }
 
   const count = [
     {
@@ -106,35 +155,24 @@ function Home() {
       bnb: "bnb3",
     },
   ];
-  // const newest = [
-  //   {
-  //     avatar: <MinusOutlined style={{ fontSize: 10 }} />,
-  //     title: 'Cao Hong Hanh',
-  //     description: '27 March 2021, at 12:30 PM',
-  //     amount: '- 120,000',
-  //     textclass: 'text-light-danger',
-  //     amountcolor: 'text-danger',
-  //   },
-  //   {
-  //     avatar: <PlusOutlined style={{ fontSize: 10 }} />,
-  //     title: 'Cao Hong Hanh',
-  //     description: '27 March 2021, at 04:30 AM',
-  //     amount: '+ 200,000',
-  //     textclass: 'text-fill',
-  //     amountcolor: 'text-success',
-  //   }]
 
 
   const newest = lastRevenue?.map((item) => ({
     id: item.id,
     avatar: <PlusOutlined style={{ fontSize: 10 }} />,
-    title: item.name,
+    title: item.clients.accounts.name,
     description: formatDateTime(item.createdAt),
     amount: `+ ${FormatVND(item.amount)}`,
     textclass: 'text-fill',
     amountcolor: 'text-success',
   }));
 
+  const validateAmount = (rule, value) => {
+    if (value && value < 10000) {
+      return Promise.reject('Số tiền tối thiểu là 10000');
+    }
+    return Promise.resolve();
+  };
 
 
   const onChange = (pageNumber) => {
@@ -147,7 +185,6 @@ function Home() {
     return jobList?.slice(start, end);
   };
 
-  const fee = '10,000';
 
 
   return (
@@ -205,14 +242,33 @@ function Home() {
               extra={
                 <Space size={"large"}>
                   <p className="bnb3" style={{ margin: 0 }}>
-                    Phí: <span className="bnb2"> {fee} </span>
+                    Phí: <span className="bnb2"> {FormatVND(fee)} </span>
                   </p>
-                  <Edit size={17} />
+                  <div style={{ cursor: 'pointer' }} onClick={showModal}><Edit size={17} /></div>
                 </Space>
               }
             >
               <LineChart revenue={revenue} />
             </Card>
+
+            <Modal title="Phí dịch vụ" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
+              <Form form={form} name='inputMoney'>
+                <Form.Item
+                  name='amount'
+                  rules={[
+                    {
+                      required: true,
+                      message: 'Không được để trống ô này!',
+                    },
+                    {
+                      validator: validateAmount,
+                    },
+                  ]}
+                >
+                  <InputNumber style={{ width: '100%' }} step={10000} placeholder='10000' />
+                </Form.Item>
+              </Form>
+            </Modal>
           </Col>
         </Row>
 

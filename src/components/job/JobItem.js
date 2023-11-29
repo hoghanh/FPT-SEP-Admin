@@ -1,14 +1,11 @@
 import { NavLink } from 'react-router-dom';
 import { Typography, Avatar, notification, Modal } from 'antd';
 import { Trash } from '../icon/Icon';
-import { FileTextFilled } from '@ant-design/icons';
+import { FileTextFilled, ExclamationCircleFilled } from '@ant-design/icons';
 import { CalculateDaysLeft, formatDate } from 'components/formatter/format';
 import { remove } from 'utils/APICaller';
-import { ExclamationCircleFilled } from '@ant-design/icons';
 
 const { confirm } = Modal;
-
-
 const { Title, Text } = Typography;
 const { Group } = Avatar;
 
@@ -61,7 +58,7 @@ function JobItem({ data }) {
           }}
         >
           <div>
-            <NavLink to='/clientProfile'>
+            <NavLink to={`/user/profile-client/${data?.clients?.accounts.id}`}>
               <Group style={{ display: 'flex' }}>
                 <Avatar
                   className='shape-avatar'
@@ -73,7 +70,7 @@ function JobItem({ data }) {
                 </div>
               </Group>
             </NavLink>
-            <NavLink to='/jobDetail'>
+            <NavLink to={`/job/job-detail/${data?.id}`}>
               <Title style={{ margin: 0 }} level={5}>
                 {data?.title}
               </Title>

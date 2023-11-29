@@ -8,8 +8,7 @@ import color from "../../assets/styles/color"
 import { File } from "../../components/icon/Icon";
 
 const { Title, Text } = Typography;
-
-function JobAppliaction() {
+function JobApplication({ arrayStatus }) {
    return (
       <>
          <Card
@@ -19,7 +18,6 @@ function JobAppliaction() {
             className="criclebox tablespace mb-24"
             title={"Thư ứng tuyển"}
          >
-
             <Row justify={'space-between'} gutter={[40, 40]} style={{ padding: '20px 20px' }}>
                <Col span={24} sm={{ span: 8 }}>
                   <Card style={{ padding: 20, borderRadius: 20, backgroundColor: color.colorLightGray }}>
@@ -28,7 +26,7 @@ function JobAppliaction() {
                            <File />
                         </Col>
                         <Col>
-                           <Typography.Title level={5} style={{ margin: 0, textAlign: 'center' }}>Thư ứng tuyển bị từ chối</Typography.Title>
+                           <Typography.Title level={5} style={{ margin: 0, textAlign: 'center' }}>{arrayStatus[0]} Ứng tuyển</Typography.Title>
                         </Col>
                      </Row>
                   </Card>
@@ -40,7 +38,7 @@ function JobAppliaction() {
                            <File />
                         </Col>
                         <Col>
-                           <Title level={5} style={{ margin: 0, textAlign: 'center' }}>6 thư ứng tuyển đã được gửi đi</Title>
+                           <Title level={5} style={{ margin: 0, textAlign: 'center' }}>{arrayStatus[1]} Phỏng vấn</Title>
                         </Col>
                      </Row>
                   </Card>
@@ -52,7 +50,7 @@ function JobAppliaction() {
                            <File />
                         </Col>
                         <Col>
-                           <Title level={5} style={{ margin: 0, textAlign: 'center' }}>3 thư ứng tuyển vào phòng phỏng vấn</Title>
+                           <Title level={5} style={{ margin: 0, textAlign: 'center' }}>{arrayStatus[2]} Nhận việc</Title>
                         </Col>
                      </Row>
                   </Card>
@@ -63,4 +61,4 @@ function JobAppliaction() {
    )
 };
 
-export default JobAppliaction;
+export default JobApplication;

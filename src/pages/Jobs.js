@@ -45,14 +45,14 @@ function Jobs() {
                      bordered={false}
                      className="criclebox tablespace mb-24"
                      title="Danh sách công việc"
-                     // extra={
-                     //    <>
-                     //       <Radio.Group onChange={onChange} defaultValue="all">
-                     //          <Radio.Button value="open">Open</Radio.Button>
-                     //          <Radio.Button value="close">Close</Radio.Button>
-                     //       </Radio.Group>
-                     //    </>
-                     // }
+                     extra={
+                        <>
+                           <Radio.Group onChange={onChange} defaultValue="all">
+                              <Radio.Button value="open">Còn hạn</Radio.Button>
+                              <Radio.Button value="close">Hết hạn</Radio.Button>
+                           </Radio.Group>
+                        </>
+                     }
                   >
                      <div className="table-responsive">
                         {

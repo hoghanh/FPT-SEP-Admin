@@ -4,7 +4,6 @@ import { formatDate } from 'components/formatter/format';
 
 const { Title, Text } = Typography;
 const { Group } = Avatar
-const face2 = "https://firebasestorage.googleapis.com/v0/b/fpt-sep-fe-eb227.appspot.com/o/images%2Favatars%2Fapricot.jpg?alt=media&token=bb762da7-2a30-4b81-be24-a7ec528f45d5"
 
 function ApplicationItem({application}) {
 
@@ -21,14 +20,12 @@ function ApplicationItem({application}) {
       } 
       return output;
    }
-
+   
    return (
       <>
          <Row style={{ padding: "10px 20px" }}>
             <Col span={24}>
-               <NavLink
-                  to="/freelancerProfile"
-               >
+               <NavLink to={`/user/profile-freelancer/${application?.freelancers.accounts.id}`}>
                   <Group
                      style={{ display: "flex" }}
                   >
@@ -45,7 +42,7 @@ function ApplicationItem({application}) {
             </Col>
             <Col span={24}>
                <NavLink
-                  to="/jobDetail"
+                  to={`/job/job-detail/${application?.jobId}`}
                >
                   <Title level={5} style={{ margin: 0 }} >
                      Javascript expert with Next.js and React.js expertise

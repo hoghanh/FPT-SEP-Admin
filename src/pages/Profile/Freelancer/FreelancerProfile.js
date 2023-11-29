@@ -85,11 +85,9 @@ function FreelancerProfile() {
    useEffect(() => {
       get({ endpoint: `/freelancer/profile/${accountId}` })
          .then((res) => {
-            console.log(res.data)
             setUser(res.data);
             get({ endpoint: `/application/freelancer/${res.data.id}` })
                .then((res) => {
-                  console.log(res.data)
                   setJobList(res.data);
                })
                .catch((error) => {
