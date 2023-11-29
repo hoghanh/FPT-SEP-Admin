@@ -150,21 +150,6 @@ function Billing() {
 
   const columns = [
     {
-      title: 'Loại',
-      dataIndex: "type",
-      width: '5%',
-      key: "type",
-      fixed: 'left',
-      render: (type) => type === "+" ?
-        <Avatar size="small" className="text-fill">
-          <PlusOutlined />
-        </Avatar>
-        :
-        <Avatar size="small" className="text-light-danger">
-          <MinusOutlined />
-        </Avatar>
-    },
-    {
       title: 'Ngày giao dịch',
       dataIndex: "createdAt",
       width: '20%',
@@ -197,7 +182,7 @@ function Billing() {
     {
       title: 'Biến động',
       dataIndex: "amount",
-      width: '10%',
+      width: '15%',
       fixed: 'right',
       sorter: (a, b) => a.amount - b.amount,
       render: (_, record) => { return <span className="bnb2">{FormatVND(record.amount, '')}</span> }

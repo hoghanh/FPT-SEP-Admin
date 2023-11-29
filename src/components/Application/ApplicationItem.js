@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom';
-import { Typography, Avatar, Row, Col, Divider } from "antd";
+import { Typography, Avatar, Row, Col, Divider, Descriptions } from "antd";
 import { formatDate } from 'components/formatter/format';
 
 const { Title, Text } = Typography;
@@ -51,17 +51,23 @@ function ApplicationItem({application}) {
                </NavLink>
             </Col>
             <Col span={24}>
-               <Text level={5} style={{ margin: 0 }} ellipsis>
+               <Text level={5} className='mb-2' style={{ margin: 0 }} ellipsis>
                   {application?.description}
                </Text>
             </Col>
-            <Col span={24} style={{ display: 'flex', justifyContent: 'space-between' }}>
-               <Text>
-                  Ngày gửi: {formatDate(application.sendDate)}
-               </Text>
-               <Text>
-                  Trạng thái: {checkStatus(application.status)}
-               </Text>
+            <Col span={24}>
+               <Descriptions column={1}>
+                  <Descriptions.Item label="Trạng thái">
+                     <Text level={4}>
+                        {checkStatus(application.status)}
+                     </Text>
+                  </Descriptions.Item>
+                  <Descriptions.Item label="Ngày gửi">
+                     <Text level={4}>
+                        {formatDate(application.sendDate)}
+                     </Text>
+                  </Descriptions.Item>
+               </Descriptions>
             </Col>
          </Row>
          <Divider />

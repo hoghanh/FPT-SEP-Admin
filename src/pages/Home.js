@@ -263,7 +263,7 @@ function Home() {
         </Row>
 
         <Row gutter={[24, 0]}>
-          <Col xs={24} sm={24} md={12} lg={12} xl={16} className='mb-24'>
+          <Col xs={24} sm={24} md={24} lg={24} xl={16} className='mb-24'>
             <Card
               bordered={false}
               className="criclebox tablespace mb-24"
@@ -291,7 +291,7 @@ function Home() {
               </div>
             </Card>
           </Col>
-          <Col xs={24} sm={24} md={12} lg={12} xl={8} className='mb-24'>
+          <Col xs={24} sm={24} md={24} lg={24} xl={8} className='mb-24'>
             <Card bordered={false} className='criclebox h-full'>
               <div className='timeline-box'>
                 <Link to='/billing'><Title level={5}>Giao dịch gần đây</Title></Link>
