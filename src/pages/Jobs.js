@@ -15,24 +15,63 @@ function Jobs() {
    const [limit, setLimit] = useState(10);
    const [page, setPage] = useState(1);
    const [jobList, setJobList] = useState([]);
-   const [pagination, setPagination] = useState(0);
+   const [sortOption, setSortOption] = useState('all');
+   const today = new Date();
 
-   const onChange = (pageNumber) => {
-        setPage(pageNumber);
-    };
 
    useEffect(() => {
-      get({ endpoint: `/job?limit=${limit}&page=${page}` })
+      get({ endpoint: `/job` })
       .then((res) => {
         setJobList(res.data.jobs);
-        setPagination(res.data.pagination);
       })
       .catch((error) => {
         notification.error({
           message: error.response.data.message,
         });
       });
-    }, [page]);
+   }, [page]);
+
+
+   const onChange = (pageNumber) => {
+      setPage(pageNumber);
+   };
+   const onChangeOption = (e) => {
+      setPage(1);
+      setSortOption(e.target.value);
+   };
+
+  let sortedJobList = [...jobList];
+
+  if (sortOption === 'all') {
+    sortedJobList.sort((a, b) => new Date(a.sentDate) - new Date(b.sentDate));
+  } else if (sortOption === 'open') {
+   const list = [];
+   for (const job of jobList) {
+      const applicationSubmitDeadline = new Date(job.applicationSubmitDeadline);
+      if (applicationSubmitDeadline > today) {
+         list.push(job);
+      }
+    }
+    sortedJobList = list
+    sortedJobList.sort((a, b) => new Date(a.sentDate) - new Date(b.sentDate));
+  } else if (sortOption === 'close') {
+   const list = [];
+   for (const job of jobList) {
+      const applicationSubmitDeadline = new Date(job.applicationSubmitDeadline);
+      if (applicationSubmitDeadline < today) {
+         list.push(job);
+      }
+    }
+    sortedJobList = list
+    sortedJobList.sort((a, b) => new Date(a.sentDate) - new Date(b.sentDate));
+  } 
+
+  const getPagedList = () => {
+   const start = (page - 1) * limit;
+   const end = start + limit;
+   return sortedJobList?.slice(start, end);
+ };
+
    
    return (
       <>
@@ -47,7 +86,8 @@ function Jobs() {
                      title="Danh sách công việc"
                      extra={
                         <>
-                           <Radio.Group onChange={onChange} defaultValue="all">
+                           <Radio.Group onChange={onChangeOption} defaultValue="all">
+                              <Radio.Button value="all">Tất cả</Radio.Button>
                               <Radio.Button value="open">Còn hạn</Radio.Button>
                               <Radio.Button value="close">Hết hạn</Radio.Button>
                            </Radio.Group>
@@ -56,19 +96,20 @@ function Jobs() {
                   >
                      <div className="table-responsive">
                         {
-                           jobList.map((jobItem, id) => {
+                           getPagedList().map((jobItem, id) => {
                               return (<JobItem key={id} data={jobItem} />)
                            })
                         }
                      </div>
                      <div style={{ display: "flex", justifyContent: "flex-end", padding: "1rem 2rem" }}>
-                     <Pagination
-                        current={pagination?.currentPage}
-                        total={pagination?.totalItems}
-                        onChange={onChange}
-                        showSizeChanger={false}
-                        style={{ padding: 20, display: 'flex', justifyContent: 'center' }}
-                     />
+                        <Pagination
+                           current={page}
+                           total={sortedJobList.length}
+                           onChange={onChange}
+                           pageSize={limit}
+                           showSizeChanger={false}
+                           style={{ padding: 20, display: "flex", justifyContent: "center" }}
+                        />
                      </div>
                      <div className="uploadfile pb-15 shadow-none">
                      </div>

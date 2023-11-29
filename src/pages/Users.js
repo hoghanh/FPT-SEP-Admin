@@ -27,7 +27,6 @@ function Accounts() {
   const [flag, setFlag] = useState(true);
 
   useEffect(() => {
-    console.log('heko')
     get({ endpoint: `/accounts/` })
       .then((res) => {
         setDataUser(res.data);
@@ -202,6 +201,7 @@ function Accounts() {
             >
               <div className='table-responsive'>
                 <Table
+                  rowKey={(record) => record.id}
                   columns={freelancer}
                   dataSource={filteredData}
                   pagination={true}

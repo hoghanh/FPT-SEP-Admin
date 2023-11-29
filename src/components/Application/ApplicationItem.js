@@ -45,7 +45,7 @@ function ApplicationItem({application}) {
                   to={`/job/job-detail/${application?.jobId}`}
                >
                   <Title level={5} style={{ margin: 0 }} >
-                     Javascript expert with Next.js and React.js expertise
+                     {application?.jobs.title}
                   </Title>
 
                </NavLink>

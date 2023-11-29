@@ -93,7 +93,7 @@ function JobItem({ data }) {
           {data?.description}
         </Typography.Paragraph>
         <Title level={5} style={{ margin: '5px 0' }}>
-          {data?.applied !== null ? data?.applied : '0'} đã ứng tuyển <FileTextFilled />
+          {data?.applied === null ||  data?.applied === "" ? '0' : data?.applied} đã ứng tuyển <FileTextFilled />
         </Title>
       </div>
     </>

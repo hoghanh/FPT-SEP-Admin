@@ -5,7 +5,6 @@ import { get } from 'utils/APICaller';
 
 function Applications() {
   const [applications, setApplications] = useState([]);
-  const [totalApplications, setTotalApplications] = useState(0);
   const [limit, setLimit] = useState(10);
   const [page, setPage] = useState(1);
   const [sortOption, setSortOption] = useState('all');
@@ -15,7 +14,6 @@ function Applications() {
       .then((res) => {
         const data = res.data;
         setApplications(data.rows)
-        setTotalApplications(data.count);
       })
       .catch((error) => {
         notification.error({
@@ -29,25 +27,26 @@ function Applications() {
   };
 
   const onChangeOption = (e) => {
+    setPage(1);
     setSortOption(e.target.value);
   };
 
   let sortedJobList = [...applications];
 
   if (sortOption === 'all') {
-    sortedJobList.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
+    sortedJobList.sort((a, b) => new Date(a.sentDate) - new Date(b.sentDate));
   } else if (sortOption === 'sent') {
     sortedJobList = sortedJobList.filter(item => item.status === 'sent');
-    sortedJobList.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
+    sortedJobList.sort((a, b) => new Date(a.sentDate) - new Date(b.sentDate));
   } else if (sortOption === 'interview') {
     sortedJobList = sortedJobList.filter(item => item.status === 'interview');
-    sortedJobList.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
+    sortedJobList.sort((a, b) => new Date(a.sentDate) - new Date(b.sentDate));
   } else if (sortOption === 'approved') {
     sortedJobList = sortedJobList.filter(item => item.status === 'approved');
-    sortedJobList.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
+    sortedJobList.sort((a, b) => new Date(a.sentDate) - new Date(b.sentDate));
   } else if (sortOption === 'declined') {
     sortedJobList = sortedJobList.filter(item => item.status === 'declined');
-    sortedJobList.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
+    sortedJobList.sort((a, b) => new Date(a.sentDate) - new Date(b.sentDate));
   }
   
 

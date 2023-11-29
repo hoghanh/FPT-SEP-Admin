@@ -167,13 +167,6 @@ function Home() {
     amountcolor: 'text-success',
   }));
 
-  const validateAmount = (rule, value) => {
-    if (value && value < 10000) {
-      return Promise.reject('Số tiền tối thiểu là 10000');
-    }
-    return Promise.resolve();
-  };
-
 
   const onChange = (pageNumber) => {
     setPage(pageNumber);
@@ -259,9 +252,6 @@ function Home() {
                     {
                       required: true,
                       message: 'Không được để trống ô này!',
-                    },
-                    {
-                      validator: validateAmount,
                     },
                   ]}
                 >

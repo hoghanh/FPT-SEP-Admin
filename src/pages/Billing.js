@@ -116,14 +116,6 @@ function Billing() {
     setIsModalOpen(false);
   }
 
-  const validateAmount = (rule, value) => {
-    if (value && value < 10000) {
-      return Promise.reject('Số tiền tối thiểu là 10000');
-    }
-    return Promise.resolve();
-  };
-
-
   const count = [
     {
       today: 'Tổng giao dịch',
@@ -284,9 +276,6 @@ function Billing() {
                         required: true,
                         message: 'Không được để trống ô này!',
                       },
-                      {
-                        validator: validateAmount,
-                      },
                     ]}
                   >
                     <InputNumber style={{ width: '100%' }} step={10000} placeholder='10000' />
@@ -315,6 +304,7 @@ function Billing() {
               >
                 <div className="table-responsive">
                   <Table
+                    rowKey={(record) => record.id}
                     columns={columns}
                     dataSource={option === 'revenue' ? revenue : deposit}
                     pagination={true}

@@ -54,7 +54,7 @@ function App() {
               component={FreelancerProfile}
             />
             <Route exact path='/clientProfile' component={ClientProfile} />
-            <Route exact path='/jobDetail' component={JobDetail} />
+            <Route exact path='/job/job-detail/:jobId' component={JobDetail} />
             <Route exact path='/applications' component={Applications} />
             <Route path='*' element={<PageNotFound />} />
           </Main>
