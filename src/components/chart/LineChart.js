@@ -48,6 +48,9 @@ function LineChart({revenue}) {
         toolbar: {
           show: false,
         },
+        zoom: {
+          enabled: false,
+        },
       },
   
       legend: {
