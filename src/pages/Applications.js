@@ -34,19 +34,19 @@ function Applications() {
   let sortedJobList = [...applications];
 
   if (sortOption === 'all') {
-    sortedJobList.sort((a, b) => new Date(a.sentDate) - new Date(b.sentDate));
+    sortedJobList.sort((a, b) => new Date(b.sendDate) - new Date(a.sendDate));
   } else if (sortOption === 'sent') {
     sortedJobList = sortedJobList.filter(item => item.status === 'sent');
-    sortedJobList.sort((a, b) => new Date(a.sentDate) - new Date(b.sentDate));
+    sortedJobList.sort((a, b) => new Date(b.sendDate) - new Date(a.sendDate));
   } else if (sortOption === 'interview') {
     sortedJobList = sortedJobList.filter(item => item.status === 'interview');
-    sortedJobList.sort((a, b) => new Date(a.sentDate) - new Date(b.sentDate));
+    sortedJobList.sort((a, b) => new Date(b.sendDate) - new Date(a.sendDate));
   } else if (sortOption === 'approved') {
     sortedJobList = sortedJobList.filter(item => item.status === 'approved');
-    sortedJobList.sort((a, b) => new Date(a.sentDate) - new Date(b.sentDate));
+    sortedJobList.sort((a, b) => new Date(b.sendDate) - new Date(a.sendDate));
   } else if (sortOption === 'declined') {
     sortedJobList = sortedJobList.filter(item => item.status === 'declined');
-    sortedJobList.sort((a, b) => new Date(a.sentDate) - new Date(b.sentDate));
+    sortedJobList.sort((a, b) => new Date(b.sendDate) - new Date(a.sendDate));
   }
   
 

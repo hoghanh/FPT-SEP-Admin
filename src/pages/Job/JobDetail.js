@@ -18,7 +18,8 @@ function JobDetail() {
             const countSent = res.data.applications.filter(item => item.status === 'sent').length
             const countInterview = res.data.applications.filter(item => item.status === 'interview').length
             const countApproved = res.data.applications.filter(item => item.status === 'approved').length
-            setArrayStatus([countSent, countInterview, countApproved])
+            const countDeclined = res.data.applications.filter(item => item.status === 'declined').length
+            setArrayStatus([countSent, countInterview, countApproved, countDeclined])
          })
          .catch((error) => {
             notification.error({

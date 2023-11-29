@@ -1,26 +1,30 @@
 import { NavLink } from 'react-router-dom';
 import { Typography, Avatar, Row, Col, Divider, Descriptions } from "antd";
 import { formatDate } from 'components/formatter/format';
+import { useState } from 'react';
 
-const { Title, Text } = Typography;
+const { Title, Text, Paragraph } = Typography;
 const { Group } = Avatar
 
-function ApplicationItem({application}) {
+function ApplicationItem({ application }) {
+   const [isTruncated, setIsTruncated] = useState(true);
+   const text = application?.description;
+   const resultString = isTruncated ? text.slice(0, 300) : text;
 
-   const checkStatus = (status)=>{
-      let output ='';
-      if(status === 'sent'){
-         output = <span style={{color: '#008ffb'}}>Đã gửi</span>
-      } else if(status === 'interview'){
-         output = <span style={{color: '#00e396'}}>Phỏng vấn</span>
-      } else if(status === 'approved'){
-         output = <span style={{color: '#feb019'}}>Nhận việc</span>
-      } else if(status === 'interview'){
-         output = <span style={{color: '#ff4560'}}>Từ chối</span>
-      } 
+   const checkStatus = (status) => {
+      let output = '';
+      if (status === 'sent') {
+         output = <span style={{ color: '#008ffb' }}>Đã gửi</span>
+      } else if (status === 'interview') {
+         output = <span style={{ color: '#00e396' }}>Phỏng vấn</span>
+      } else if (status === 'approved') {
+         output = <span style={{ color: '#feb019' }}>Nhận việc</span>
+      } else if (status === 'interview') {
+         output = <span style={{ color: '#ff4560' }}>Từ chối</span>
+      }
       return output;
    }
-   
+
    return (
       <>
          <Row style={{ padding: "10px 20px" }}>
@@ -51,9 +55,14 @@ function ApplicationItem({application}) {
                </NavLink>
             </Col>
             <Col span={24}>
-               <Text level={5} className='mb-2' style={{ margin: 0 }} ellipsis>
-                  {application?.description}
-               </Text>
+               <Paragraph className='mb-2' style={{ margin: 0 }}>
+                  {resultString} {text.length > 300 && (
+                     <span style={{ color: '#40a9ff', cursor: 'pointer', fontWeight: 'bold' }} onClick={() => setIsTruncated(!isTruncated)}>
+                        {isTruncated ? 'xem thêm' : 'thu gọn'}
+                     </span>
+                  )}
+               </Paragraph>
+
             </Col>
             <Col span={24}>
                <Descriptions column={1}>

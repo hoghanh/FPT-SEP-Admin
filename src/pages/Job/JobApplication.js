@@ -19,7 +19,7 @@ function JobApplication({ arrayStatus }) {
             title={"Thư ứng tuyển"}
          >
             <Row justify={'space-between'} gutter={[40, 40]} style={{ padding: '20px 20px' }}>
-               <Col span={24} sm={{ span: 8 }}>
+               <Col span={24} sm={{ span: 6 }}>
                   <Card style={{ padding: 20, borderRadius: 20, backgroundColor: color.colorLightGray }}>
                      <Row align={'middle'} gutter={[0, 10]} style={{ flexDirection: 'column' }}>
                         <Col>
@@ -31,7 +31,7 @@ function JobApplication({ arrayStatus }) {
                      </Row>
                   </Card>
                </Col>
-               <Col span={24} sm={{ span: 8 }}>
+               <Col span={24} sm={{ span: 6 }}>
                   <Card style={{ padding: 20, borderRadius: 20, backgroundColor: color.colorLightGray }}>
                      <Row align={'middle'} gutter={[0, 10]} style={{ flexDirection: 'column' }}>
                         <Col>
@@ -43,7 +43,7 @@ function JobApplication({ arrayStatus }) {
                      </Row>
                   </Card>
                </Col>
-               <Col span={24} sm={{ span: 8 }}>
+               <Col span={24} sm={{ span: 6 }}>
                   <Card style={{ padding: 20, borderRadius: 20, backgroundColor: color.colorLightGray }}>
                      <Row align={'middle'} gutter={[0, 10]} style={{ flexDirection: 'column' }}>
                         <Col>
@@ -51,6 +51,18 @@ function JobApplication({ arrayStatus }) {
                         </Col>
                         <Col>
                            <Title level={5} style={{ margin: 0, textAlign: 'center' }}>{arrayStatus[2]} Nhận việc</Title>
+                        </Col>
+                     </Row>
+                  </Card>
+               </Col>
+               <Col span={24} sm={{ span: 6 }}>
+                  <Card style={{ padding: 20, borderRadius: 20, backgroundColor: color.colorLightGray }}>
+                     <Row align={'middle'} gutter={[0, 10]} style={{ flexDirection: 'column' }}>
+                        <Col>
+                           <File />
+                        </Col>
+                        <Col>
+                           <Title level={5} style={{ margin: 0, textAlign: 'center' }}>{arrayStatus[3]} Từ chối</Title>
                         </Col>
                      </Row>
                   </Card>

@@ -4,6 +4,7 @@ import { Trash } from '../icon/Icon';
 import { FileTextFilled, ExclamationCircleFilled } from '@ant-design/icons';
 import { CalculateDaysLeft, formatDate } from 'components/formatter/format';
 import { remove } from 'utils/APICaller';
+import { useState } from 'react';
 
 const { confirm } = Modal;
 const { Title, Text } = Typography;
@@ -38,7 +39,9 @@ const showPropsConfirm = (id) => {
 };
 
 function JobItem({ data }) {
-  
+  const [isTruncated, setIsTruncated] = useState(true);
+   const text = data?.description;
+   const resultString = isTruncated ? text.slice(0, 400) : text;
   return (
     <>
       <div
@@ -84,16 +87,15 @@ function JobItem({ data }) {
           Ngày đăng: {formatDate(data?.createdAt)} -{' '}
           {CalculateDaysLeft(data?.applicationSubmitDeadline)}
         </Text>
-        <Typography.Paragraph
-          ellipsis={{
-            rows: 2,
-            expandable: false,
-          }}
-        >
-          {data?.description}
+        <Typography.Paragraph className='mb-2' style={{ margin: 0 }}>
+          {resultString} {text.length > 400 && (
+            <span style={{ color: '#40a9ff', cursor: 'pointer', fontWeight:'bold' }} onClick={() => setIsTruncated(!isTruncated)}>
+              {isTruncated ? 'xem thêm' : 'thu gọn'}
+            </span>
+          )}
         </Typography.Paragraph>
         <Title level={5} style={{ margin: '5px 0' }}>
-          {data?.applied === null ||  data?.applied === "" ? '0' : data?.applied} đã ứng tuyển <FileTextFilled />
+          {data?.applied === null || data?.applied === "" ? '0' : data?.applied} đã ứng tuyển <FileTextFilled />
         </Title>
       </div>
     </>
