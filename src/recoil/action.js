@@ -39,7 +39,7 @@ const useAuthActions = () => {
   const autoLogin = () => {
     const token = LocalStorageUtils.getToken();
     if (token) {
-      const user = jwtDecode(LocalStorageUtils.getUser());
+      const user = jwtDecode(token);
       const expireTime = new Date(jwtDecode(token).exp * 1000);
       if (expireTime > Date.now()) {
         setAuth({

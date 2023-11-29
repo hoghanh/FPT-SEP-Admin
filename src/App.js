@@ -17,21 +17,22 @@ import useAuthActions from 'recoil/action';
 import { useEffect, useState } from 'react';
 import { useRecoilValue } from 'recoil';
 import PageNotFound from 'pages/404/PageNotFound';
+import LocalStorageUtils from 'utils/LocalStorageUtils';
 
 function App() {
   const { autoLogin } = useAuthActions();
-
-  const auth = useRecoilValue(authState);
 
   useEffect(() => {
     autoLogin();
   }, []);
 
+  const token = LocalStorageUtils.getToken();
+
   return (
     <div className='App'>
       <Switch>
         <Route path='/sign-in' exact component={SignIn} />
-        {auth.id ? (
+        {token ? (
           <Main>
             <Route exact path='/dashboard' component={Home} />
             <Route exact path='/billing' component={Billing} />
