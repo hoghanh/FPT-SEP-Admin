@@ -103,7 +103,7 @@ function Applications() {
                 <Col span={24}>
                 <Pagination
                   current={page}
-                  total={sortedJobList.length}
+                  total={getPagedList().length}
                   onChange={onChange}
                   pageSize={limit}
                   showSizeChanger={false}

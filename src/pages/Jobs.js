@@ -124,7 +124,7 @@ function Jobs() {
                      <div style={{ display: "flex", justifyContent: "flex-end", padding: "1rem 2rem" }}>
                         <Pagination
                            current={page}
-                           total={sortedJobList.length}
+                           total={getPagedList().length}
                            onChange={onChange}
                            pageSize={limit}
                            showSizeChanger={false}
