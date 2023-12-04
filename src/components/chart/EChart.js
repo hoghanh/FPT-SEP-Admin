@@ -161,7 +161,7 @@ function EChart({jobList}) {
       <div className="chart-vistior">
         <Title level={5}>Tổng bài viết đã đăng tháng {getMonthThisMonth()} này</Title>
         <Paragraph className="lastweek">
-          {compareMonths([])}
+          {compareMonths()}
         </Paragraph>
       </div>
     </>

@@ -38,8 +38,9 @@ export default function SignIn() {
         notification.success({
           message: 'Đăng nhập thành công',
         });
+        window.location.href = "/dashboard";
 
-        history.push('/dashboard');
+        // history.push('/dashboard');
       })
       .catch((error) => {
         notification.error({

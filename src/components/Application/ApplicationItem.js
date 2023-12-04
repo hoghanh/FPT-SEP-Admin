@@ -19,7 +19,7 @@ function ApplicationItem({ application }) {
          output = <span style={{ color: '#00e396' }}>Phỏng vấn</span>
       } else if (status === 'approved') {
          output = <span style={{ color: '#feb019' }}>Nhận việc</span>
-      } else if (status === 'interview') {
+      } else if (status === 'declined') {
          output = <span style={{ color: '#ff4560' }}>Từ chối</span>
       }
       return output;

@@ -4,7 +4,7 @@ import {
    Card,
    Radio,
    Pagination,
-   notification,
+   notification, Empty,
 } from "antd";
 import { useEffect, useState } from "react";
 import { get } from "utils/APICaller";
@@ -95,11 +95,15 @@ function Jobs() {
                      }
                   >
                      <div className="table-responsive">
-                        {
+                        {getPagedList().length === 0 || getPagedList() === null ? (
+                           <Col span={24}>
+                              <Empty description={<span>Dữ liệu trống</span>} />
+                           </Col>
+                        ) : (
                            getPagedList().map((jobItem, id) => {
                               return (<JobItem key={id} data={jobItem} />)
                            })
-                        }
+                        )}
                      </div>
                      <div style={{ display: "flex", justifyContent: "flex-end", padding: "1rem 2rem" }}>
                         <Pagination

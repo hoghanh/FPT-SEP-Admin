@@ -1,4 +1,4 @@
-import { Row, Col, Card, Radio, notification, Pagination } from 'antd';
+import { Row, Col, Card, Radio, notification, Pagination, Empty } from 'antd';
 import ApplicationItem from '../components/Application/ApplicationItem';
 import { useEffect, useState } from 'react';
 import { get } from 'utils/APICaller';
@@ -80,7 +80,11 @@ function Applications() {
               }
             >
               <Row style={{ width: '100%' }}>
-                {getPagedList()?.map((application) => { return <Col span={24} key={application.id}><ApplicationItem application={application} /></Col> })}
+                {getPagedList().length === 0 || getPagedList() === null ? (
+                  <Col span={24}>
+                    <Empty description={<span>Dữ liệu trống</span>} />
+                  </Col>
+                ) : (getPagedList()?.map((application) => { return <Col span={24} key={application.id}><ApplicationItem application={application} /></Col> }))}
                 <Col span={24}>
                 <Pagination
                   current={page}
