@@ -4,17 +4,20 @@ import {
    Card,
    Radio,
    Pagination,
-   notification, Empty,
+   notification, Empty, Input
 } from "antd";
 import { useEffect, useState } from "react";
 import { get } from "utils/APICaller";
+import { SearchOutlined } from '@ant-design/icons';
+
 
 import JobItem from "../components/job/JobItem";
 
 function Jobs() {
+   const [jobList, setJobList] = useState([]);
+   const [searchTerm, setSearchTerm] = useState('');
    const [limit, setLimit] = useState(10);
    const [page, setPage] = useState(1);
-   const [jobList, setJobList] = useState([]);
    const [sortOption, setSortOption] = useState('all');
    const today = new Date();
 
@@ -59,18 +62,23 @@ function Jobs() {
    for (const job of jobList) {
       const applicationSubmitDeadline = new Date(job.applicationSubmitDeadline);
       if (applicationSubmitDeadline < today) {
-         list.push(job);
+            list.push(job);
+         }
       }
-    }
-    sortedJobList = list
-    sortedJobList.sort((a, b) => new Date(a.sentDate) - new Date(b.sentDate));
-  } 
+      sortedJobList = list
+      sortedJobList.sort((a, b) => new Date(a.sentDate) - new Date(b.sentDate));
+   }
 
-  const getPagedList = () => {
-   const start = (page - 1) * limit;
-   const end = start + limit;
-   return sortedJobList?.slice(start, end);
- };
+   const filteredData = sortedJobList?.filter((item) =>
+      item.title.toLowerCase().includes(searchTerm.toLowerCase())
+   );
+
+
+   const getPagedList = () => {
+      const start = (page - 1) * limit;
+      const end = start + limit;
+      return filteredData?.slice(start, end);
+   };
 
    
    return (
@@ -86,6 +94,14 @@ function Jobs() {
                      title="Danh sách công việc"
                      extra={
                         <>
+                           <div className='header-control' style={{ marginBottom: 10 }}>
+                              <Input
+                                 className='header-search'
+                                 placeholder='Tìm kiếm theo tên'
+                                 prefix={<SearchOutlined />}
+                                 onChange={(e) => setSearchTerm(e.target.value)}
+                              />
+                           </div>
                            <Radio.Group onChange={onChangeOption} defaultValue="all">
                               <Radio.Button value="all">Tất cả</Radio.Button>
                               <Radio.Button value="open">Còn hạn</Radio.Button>

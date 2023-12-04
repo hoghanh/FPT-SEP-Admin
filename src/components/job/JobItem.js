@@ -90,7 +90,7 @@ function JobItem({ data }) {
         <Typography.Paragraph className='mb-2' style={{ margin: 0 }}>
           {resultString} {text.length > 400 && (
             <span style={{ color: '#40a9ff', cursor: 'pointer', fontWeight:'bold' }} onClick={() => setIsTruncated(!isTruncated)}>
-              {isTruncated ? 'xem thêm' : 'thu gọn'}
+              {isTruncated ? 'xem thêm' : null}
             </span>
           )}
         </Typography.Paragraph>

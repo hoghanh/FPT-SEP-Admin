@@ -58,7 +58,7 @@ function ApplicationItem({ application }) {
                <Paragraph className='mb-2' style={{ margin: 0 }}>
                   {resultString} {text.length > 300 && (
                      <span style={{ color: '#40a9ff', cursor: 'pointer', fontWeight: 'bold' }} onClick={() => setIsTruncated(!isTruncated)}>
-                        {isTruncated ? 'xem thêm' : 'thu gọn'}
+                        {isTruncated ? 'xem thêm' : null}
                      </span>
                   )}
                </Paragraph>
