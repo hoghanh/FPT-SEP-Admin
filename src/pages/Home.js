@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Card, Col, Row, Typography, List, Avatar, Space, notification, Pagination, Modal, Form, InputNumber } from 'antd';
+import { Card, Col, Row, Typography, List, Avatar, Space, notification, Pagination, Modal, Form, InputNumber, Select } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import Echart from '../components/chart/EChart';
 import LineChart from '../components/chart/LineChart';
@@ -29,7 +29,9 @@ function Home() {
   const [totalApplications, setTotalApplications] = useState(0);
   const [totalRevenue, setTotalRevenue] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [fee, setFee] = useState(0);
+  const [commissionFee, setCommissionFee] = useState([]);
+  const [postingFee, setPostingFee] = useState([]);
+  const [flag, setFlag] = useState(false);
   const [form] = Form.useForm();
 
   useEffect(() => {
@@ -70,7 +72,7 @@ function Home() {
 
 
   useEffect(() => {
-    get({ endpoint: `/job` })
+    get({ endpoint: `/job/` })
       .then((res) => {
         res.data.jobs.sort((a, b) => b.applied - a.applied);
         setJobList(res.data.jobs);
@@ -86,14 +88,16 @@ function Home() {
   useEffect(() => {
     get({ endpoint: `/systemValue/fee` })
       .then((res) => {
-        setFee(res.data.value)
+        setCommissionFee(res.data.filter((i)=> i.name === 'commissionFee'))
+        setPostingFee(res.data.filter((i)=> i.name === 'postingFee'))
+        setFlag(false);
       })
       .catch((error) => {
         notification.error({
           message: error.response.data.message,
         });
       });
-  }, [fee]);
+  }, [flag]);
 
   const showModal = () => {
     setIsModalOpen(true);
@@ -104,16 +108,17 @@ function Home() {
       .validateFields()
       .then((values) => {
         put({
-          endpoint: `/systemValue/fee`, body: {
-            value: values.amount,
+          endpoint: `/systemValue/fee`, 
+          body: {
+            feeName: values.feeName,
+            value: values.value,
           }
         })
           .then((res) => {
-            console.log(res.data.message)
+            setFlag(true)
             notification.success({
               message: res.data.message,
             });
-            setFee(values.amount)
             setIsModalOpen(false);
           })
           .catch((error) => {
@@ -235,7 +240,7 @@ function Home() {
               extra={
                 <Space size={"large"}>
                   <p className="bnb3" style={{ margin: 0 }}>
-                    Phí: <span className="bnb2"> {FormatVND(fee)} </span>
+                    Phí dịch vụ: <span className="bnb2"> {FormatVND(commissionFee[0]?.value + postingFee[0]?.value)} </span>
                   </p>
                   <div style={{ cursor: 'pointer' }} onClick={showModal}><Edit size={17} /></div>
                 </Space>
@@ -244,10 +249,32 @@ function Home() {
               <LineChart revenue={revenue} />
             </Card>
 
-            <Modal title="Phí dịch vụ" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
+            <Modal title="Phí dịch vụ" open={isModalOpen} onOk={handleOk} onCancel={handleCancel} okText='Lưu' cancelText='Hủy bỏ'>
               <Form form={form} name='inputMoney'>
+                <Typography.Text>Hiện tại | Phí nhận việc <span className="bnb2">{FormatVND(commissionFee[0]?.value)}</span> - Phí đăng bài: <span className="bnb2">{FormatVND(postingFee[0]?.value)}</span></Typography.Text>
                 <Form.Item
-                  name='amount'
+                  name='feeName'
+                  style={{ paddingTop: 20 }}
+                  initialValue='commissionFee'
+                >
+                  <Select
+                    style={{
+                      width: 200,
+                    }}
+                    options={[
+                      {
+                        value: 'commissionFee',
+                        label: 'Phí nhận việc',
+                      },
+                      {
+                        value: 'postingFee',
+                        label: 'Phí đăng bài',
+                      },
+                    ]}
+                  />
+                </Form.Item>
+                <Form.Item
+                  name='value'
                   rules={[
                     {
                       required: true,
