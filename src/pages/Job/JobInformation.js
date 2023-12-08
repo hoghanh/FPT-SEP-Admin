@@ -96,7 +96,7 @@ function JobInformation({jobDetail}) {
             <Col span={24}>
                <Row gutter={[0, 20]}>
                   <Col span={24}>
-                     <Text>{jobDetail?.description}</Text>
+                     <p className='mb-2' style={{ margin: 0 }} dangerouslySetInnerHTML={{ __html: jobDetail?.description }} />
                   </Col>
                </Row>
             </Col>
@@ -148,7 +148,7 @@ function JobInformation({jobDetail}) {
                            whiteSpace: 'nowrap',
                         }}
                      >
-                        {item.name}
+                        {item.name} - {item.jobskill.level}
                      </List.Item>
                   )}
                />

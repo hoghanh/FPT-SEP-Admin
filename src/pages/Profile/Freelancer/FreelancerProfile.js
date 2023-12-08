@@ -23,8 +23,10 @@ import { NavLink, useParams } from 'react-router-dom';
 const { Title, Text } = Typography;
 const { Group } = Avatar;
 
-
 function JobItem({ data }) {
+   const [isTruncated, setIsTruncated] = useState(true);
+   const text = data?.description;
+   const resultString = isTruncated ? text.slice(0, 300) : text;
    return (
      <>
        <div
@@ -44,16 +46,14 @@ function JobItem({ data }) {
            }}
          >
            <div>
-             <NavLink to='/clientProfile'>
                <Group style={{ display: 'flex' }}>
                  <div className='avatar-info'>
                    <Title level={4}>{data?.jobs?.clients?.accounts?.name}</Title>
                  </div>
                </Group>
-             </NavLink>
-             <NavLink to='/jobDetail'>
+             <NavLink to={`/job/job-detail/${data.jobId}`}>
                <Title style={{ margin: 0 }} level={5}>
-                 {data?.title}
+                 {data?.jobs?.title}
                </Title>
              </NavLink>
            </div>
@@ -62,16 +62,14 @@ function JobItem({ data }) {
            Ngày đăng: {formatDate(data?.createdAt)} -{' '}
            {CalculateDaysLeft(data?.applicationSubmitDeadline)}
          </Text>
-         <Typography.Paragraph
-           ellipsis={{
-             rows: 3,
-             expandable: false,
-           }}
-         >
-           {data?.description}
-         </Typography.Paragraph>
-       </div>
-     </>
+            <p className='mb-2' style={{ margin: 0 }} dangerouslySetInnerHTML={{ __html: resultString }} />
+            {text.length > 300 && (
+               <span style={{ color: '#40a9ff', cursor: 'pointer', fontWeight: 'bold' }} onClick={() => setIsTruncated(!isTruncated)}>
+                  {isTruncated ? 'xem thêm' : null}
+               </span>
+            )}
+         </div>
+      </>
    );
  }
 
@@ -107,9 +105,6 @@ function FreelancerProfile() {
       setPage(pageNumber);
    };
 
-   const onChangeSort = (e) => {
-      console.log(e.target.value)
-   };
    const getPagedList = () => {
       const start = (page - 1) * pageSize;
       const end = start + pageSize;
@@ -146,7 +141,7 @@ function FreelancerProfile() {
                            </Col>
                            <Col style={{ padding: 20 }}>
                               <Title level={4}>{user?.title}</Title>
-                              <Text level={3}>{user?.introduction}</Text>
+                              <p dangerouslySetInnerHTML={{ __html: user?.introduction }}/>
                            </Col>
                         </Col>
                         <Col md={1} xs={0}>
@@ -312,15 +307,6 @@ function FreelancerProfile() {
                      bordered={false}
                      className="criclebox tablespace mb-24"
                      title="Danh sách công việc"
-                     extra={
-                        <>
-                           <Radio.Group onChange={onChangeSort} defaultValue="all">
-                              <Radio.Button value="all">Tất cả</Radio.Button>
-                              <Radio.Button value="open">Còn hạn</Radio.Button>
-                              <Radio.Button value="close">Hết hạn</Radio.Button>
-                           </Radio.Group>
-                        </>
-                     }
                   >
                      <div className="table-responsive">
                         {

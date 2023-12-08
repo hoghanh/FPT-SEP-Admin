@@ -22,6 +22,9 @@ const { Group } = Avatar;
 
 
 function JobItem({ data }) {
+   const [isTruncated, setIsTruncated] = useState(true);
+   const text = data?.description;
+   const resultString = isTruncated ? text.slice(0, 300) : text;
    return (
      <>
        <div
@@ -35,38 +38,34 @@ function JobItem({ data }) {
          <div
            style={{
              display: 'flex',
-             alignItems: 'flex-start',
-             justifyContent: 'space-between',
-             gap: 15,
-           }}
-         >
-           <div>
-             <NavLink to='/clientProfile'>
-               <Group style={{ display: 'flex' }}>
-                 <div className='avatar-info'>
-                   <Title level={4}>{data?.jobs?.clients?.accounts?.name}</Title>
-                 </div>
-               </Group>
-             </NavLink>
-             <NavLink to='/jobDetail'>
-               <Title style={{ margin: 0 }} level={5}>
-                 {data?.title}
-               </Title>
-             </NavLink>
-           </div>
-         </div>
+                  alignItems: 'flex-start',
+                  justifyContent: 'space-between',
+                  gap: 15,
+               }}
+            >
+               <div>
+                  <Group style={{ display: 'flex' }}>
+                     <div className='avatar-info'>
+                        <Title level={4}>{data?.jobs?.clients?.accounts?.name}</Title>
+                     </div>
+                  </Group>
+                  <NavLink to={`/job/job-detail/${data.id}`}>
+                     <Title style={{ margin: 0 }} level={5}>
+                        {data?.title}
+                     </Title>
+                  </NavLink>
+               </div>
+            </div>
          <Text level={4}>
            Ngày đăng: {formatDate(data?.createdAt)} -{' '}
            {CalculateDaysLeft(data?.applicationSubmitDeadline)}
          </Text>
-         <Typography.Paragraph
-           ellipsis={{
-             rows: 3,
-             expandable: false,
-           }}
-         >
-           {data?.description}
-         </Typography.Paragraph>
+         <p className='mb-2' style={{ margin: 0 }} dangerouslySetInnerHTML={{ __html: resultString }} />
+            {text.length > 300 && (
+               <span style={{ color: '#40a9ff', cursor: 'pointer', fontWeight: 'bold' }} onClick={() => setIsTruncated(!isTruncated)}>
+                  {isTruncated ? 'xem thêm' : null}
+               </span>
+            )}
        </div>
      </>
    );
@@ -77,15 +76,15 @@ function ClientProfile() {
    const [page, setPage] = useState(1);
    const [jobList, setJobList] = useState([]);
    const [pageSize] = useState(10);
+   const [sortOption, setSortOption] = useState('all');
    const { accountId } = useParams();
 
    useEffect(() => {
       get({ endpoint: `/client/profile/${accountId}` })
          .then((res) => {
             setUser(res.data);
-            get({ endpoint: `/job/client/1` })
+            get({ endpoint: `/job/client/${res.data.id}` })
                .then((res) => {
-                  console.log(res.data)
                   setJobList(res.data);
                })
                .catch((error) => {
@@ -105,14 +104,40 @@ function ClientProfile() {
       setPage(pageNumber);
    };
 
-   const onChangeSort = (e) => {
-      console.log(e.target.value)
+   const onChangeOption = (e) => {
+      setSortOption(e.target.value);
    };
-   
+
+   let sortedJobList = [...jobList];
+
+
+   if (sortOption === 'all') {
+      sortedJobList.sort((a, b) => new Date(a.sentDate) - new Date(b.sentDate));
+   } else if (sortOption === 'open') {
+      const list = [];
+      for (const job of jobList) {
+         if (job.status === 'open') {
+            list.push(job);
+         }
+      }
+      sortedJobList = list
+      sortedJobList.sort((a, b) => new Date(a.sentDate) - new Date(b.sentDate));
+   } else if (sortOption === 'close') {
+      const list = [];
+      for (const job of jobList) {
+         if (job.status === 'close') {
+            list.push(job);
+         }
+      }
+      sortedJobList = list
+      sortedJobList.sort((a, b) => new Date(a.sentDate) - new Date(b.sentDate));
+   }
+
+
    const getPagedList = () => {
       const start = (page - 1) * pageSize;
       const end = start + pageSize;
-      return jobList?.slice(start, end);
+      return sortedJobList?.slice(start, end);
    };
 
 
@@ -145,7 +170,7 @@ function ClientProfile() {
                            </Col>
                            <Col style={{ padding: 20 }}>
                               <Title level={4}>{user?.title}</Title>
-                              <Text level={3}>{user?.introduction}</Text>
+                              <p dangerouslySetInnerHTML={{ __html: user?.introduction }}/>
                            </Col>
                         </Col>
                         <Col md={1} xs={0}>
@@ -187,7 +212,7 @@ function ClientProfile() {
                      title="Danh sách công việc"
                      extra={
                         <>
-                           <Radio.Group onChange={onChangeSort} defaultValue="all">
+                           <Radio.Group onChange={onChangeOption} defaultValue="all">
                               <Radio.Button value="all">Tất cả</Radio.Button>
                               <Radio.Button value="open">Còn hạn</Radio.Button>
                               <Radio.Button value="close">Hết hạn</Radio.Button>
@@ -205,7 +230,7 @@ function ClientProfile() {
                      <div style={{ display: "flex", justifyContent: "flex-end", padding: "1rem 2rem" }}>
                         <Pagination
                            current={page}
-                           total={jobList?.length}
+                           total={sortedJobList.length}
                            onChange={onChange}
                            pageSize={pageSize}
                            showSizeChanger={false}

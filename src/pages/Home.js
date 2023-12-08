@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import { Card, Col, Row, Typography, List, Avatar, Space, notification, Pagination, Modal, Form, InputNumber, Select } from 'antd';
-import { PlusOutlined } from '@ant-design/icons';
+import { Card, Col, Row, Typography, List, Avatar, Space, notification, Pagination, Modal, Form, InputNumber, Select, Input } from 'antd';
+import { PlusOutlined, SearchOutlined } from '@ant-design/icons';
 import Echart from '../components/chart/EChart';
 import LineChart from '../components/chart/LineChart';
 import StackedBarChart from '../components/chart/StackedBarChart';
@@ -33,6 +33,8 @@ function Home() {
   const [postingFee, setPostingFee] = useState([]);
   const [flag, setFlag] = useState(false);
   const [form] = Form.useForm();
+  const [searchTerm, setSearchTerm] = useState('');
+
 
   useEffect(() => {
     get({ endpoint: `/application/` })
@@ -177,10 +179,14 @@ function Home() {
     setPage(pageNumber);
   };
 
+  const filteredData = jobList?.filter((item) =>
+  item.title.toLowerCase().includes(searchTerm.toLowerCase())
+);
+
   const getPagedList = () => {
     const start = (page - 1) * limit;
     const end = start + limit;
-    return jobList?.slice(start, end);
+    return filteredData?.slice(start, end);
   };
 
 
@@ -295,7 +301,14 @@ function Home() {
               bordered={false}
               className="criclebox tablespace mb-24"
               title="Danh sách công việc"
-
+              extra={<div className='header-control' style={{ marginBottom: 10 }}>
+                <Input
+                  className='header-search'
+                  placeholder='Tìm kiếm theo tên'
+                  prefix={<SearchOutlined />}
+                  onChange={(e) => { setPage(1); setSearchTerm(e.target.value) }}
+                />
+              </div>}
             >
               <div className="table-responsive">
                 {
@@ -307,7 +320,7 @@ function Home() {
               <div style={{ display: "flex", justifyContent: "flex-end", padding: "1rem 2rem" }}>
                 <Pagination
                   current={page}
-                  total={totalPosts}
+                  total={filteredData.length}
                   onChange={onChange}
                   pageSize={limit}
                   showSizeChanger={false}

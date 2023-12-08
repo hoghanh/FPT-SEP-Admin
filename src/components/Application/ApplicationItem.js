@@ -55,14 +55,12 @@ function ApplicationItem({ application }) {
                </NavLink>
             </Col>
             <Col span={24}>
-               <Paragraph className='mb-2' style={{ margin: 0 }}>
-                  {resultString} {text.length > 300 && (
-                     <span style={{ color: '#40a9ff', cursor: 'pointer', fontWeight: 'bold' }} onClick={() => setIsTruncated(!isTruncated)}>
-                        {isTruncated ? 'xem thêm' : null}
-                     </span>
-                  )}
-               </Paragraph>
-
+               <p className='mb-2' style={{ margin: 0 }} dangerouslySetInnerHTML={{ __html: resultString }} />
+               {text.length > 300 && (
+                  <span style={{ color: '#40a9ff', cursor: 'pointer', fontWeight: 'bold' }} onClick={() => setIsTruncated(!isTruncated)}>
+                     {isTruncated ? 'xem thêm' : null}
+                  </span>
+               )}
             </Col>
             <Col span={24}>
                <Descriptions column={1}>

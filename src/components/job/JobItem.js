@@ -87,13 +87,12 @@ function JobItem({ data }) {
           Ngày đăng: {formatDate(data?.createdAt)} -{' '}
           {CalculateDaysLeft(data?.applicationSubmitDeadline)}
         </Text>
-        <Typography.Paragraph className='mb-2' style={{ margin: 0 }}>
-          {resultString} {text.length > 400 && (
-            <span style={{ color: '#40a9ff', cursor: 'pointer', fontWeight:'bold' }} onClick={() => setIsTruncated(!isTruncated)}>
-              {isTruncated ? 'xem thêm' : null}
-            </span>
-          )}
-        </Typography.Paragraph>
+        <p className='mb-2' style={{ margin: 0 }} dangerouslySetInnerHTML={{ __html: resultString }} />
+        {text.length > 300 && (
+          <span style={{ color: '#40a9ff', cursor: 'pointer', fontWeight: 'bold' }} onClick={() => setIsTruncated(!isTruncated)}>
+            {isTruncated ? 'xem thêm' : null}
+          </span>
+        )}
         <Title level={5} style={{ margin: '5px 0' }}>
           {data?.applied === null || data?.applied === "" ? '0' : data?.applied} đã ứng tuyển <FileTextFilled />
         </Title>
