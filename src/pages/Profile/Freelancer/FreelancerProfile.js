@@ -111,7 +111,6 @@ function FreelancerProfile() {
       return jobList?.slice(start, end);
    };
 
-
    return (
       <>
          <div className="tabled" >
@@ -171,6 +170,11 @@ function FreelancerProfile() {
                                  {user?.accounts.address}
                               </Descriptions.Item>
                            </Descriptions>
+                           {user?.cvFile && <Descriptions>
+                              <Descriptions.Item label='CV' layout="vertical">
+                                 <Typography.Link href={user?.cvFile} target='_blank'>CV.pdf</Typography.Link>
+                              </Descriptions.Item>
+                           </Descriptions>}
                         </Col>
                      </Row>
                      <Divider style={{ margin: 0 }} />
@@ -207,13 +211,13 @@ function FreelancerProfile() {
                               Ngôn ngữ
                            </Title>
                         </Col>
-                        <Col span={24} style={{ padding: "10px 20px" }}>
-                           <Descriptions column={2}>
-                              {user?.language.map((item, index) => {
-                                 return (<Descriptions.Item label={item.name}>{item.level}</Descriptions.Item>)
-                              })}
-                           </Descriptions>
-                        </Col>
+                        {user?.language.map((item, index) => (
+                           <Col span={24} style={{ padding: "10px 20px" }}>
+                              <Descriptions column={2}>
+                                 <Descriptions.Item label={item.name}>{item.level}</Descriptions.Item>
+                              </Descriptions>
+                           </Col>
+                        ))}
                      </Row>
                   </Card>
                </Col>
