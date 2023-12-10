@@ -103,7 +103,7 @@ function Applications() {
                 <Col span={24}>
                 <Pagination
                   current={page}
-                  total={getPagedList().length}
+                  total={filteredData.length}
                   onChange={onChange}
                   pageSize={limit}
                   showSizeChanger={false}

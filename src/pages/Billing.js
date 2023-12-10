@@ -283,6 +283,10 @@ function Billing() {
                       required: true,
                       message: 'Không được để trống ô này!',
                     },
+                    {
+                      validator: (_, value) =>
+                        value >= 0 ? Promise.resolve() : Promise.reject(new Error('Giá trị phải lớn hơn hoặc bằng 0!')),
+                    },
                   ]}
                 >
                   <InputNumber style={{ width: '100%' }} step={10000} placeholder='10000' />
@@ -302,7 +306,7 @@ function Billing() {
                 title="Danh sách giao dịch"
                 extra={
                   <>
-                    <Radio.Group onChange={onChange} defaultValue="revenue">
+                    <Radio.Group onChange={onChange} defaultValue="deposit">
                       <Radio.Button value="revenue">Doanh thu</Radio.Button>
                       <Radio.Button value="deposit">Nạp tiền</Radio.Button>
                     </Radio.Group>

@@ -25,6 +25,7 @@ function Jobs() {
    useEffect(() => {
       get({ endpoint: `/job` })
       .then((res) => {
+         console.log(res.data.jobs)
         setJobList(res.data.jobs);
       })
       .catch((error) => {
@@ -124,7 +125,7 @@ function Jobs() {
                      <div style={{ display: "flex", justifyContent: "flex-end", padding: "1rem 2rem" }}>
                         <Pagination
                            current={page}
-                           total={getPagedList().length}
+                           total={filteredData.length}
                            onChange={onChange}
                            pageSize={limit}
                            showSizeChanger={false}
