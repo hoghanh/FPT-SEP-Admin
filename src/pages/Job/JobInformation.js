@@ -26,8 +26,8 @@ function JobInformation({jobDetail}) {
             notification.success({
               message: 'Xoá bài viết thành công',
             });
-            window.location.reload()
-          })
+            window.location.href = "/job";
+         })
           .catch((error) => {
             notification.error({
               message: 'Có lỗi xảy ra trong quá trình xoá',
