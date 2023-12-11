@@ -3,12 +3,11 @@ import {
   Col,
   Row,
   Typography,
-  Avatar,
   Table,
   Space,
   notification,
   Radio,
-  Modal, Form, InputNumber, Select
+  Modal, Form, InputNumber, Select, Button
 } from "antd";
 import {
   Money,
@@ -22,6 +21,8 @@ import { get, put } from "utils/APICaller";
 import { FormatVND, formatDateTime } from "components/formatter/format";
 
 const { Title } = Typography;
+const { confirm } = Modal;
+
 
 function Billing() {
   const [revenue, setRevenue] = useState([]);
@@ -30,6 +31,7 @@ function Billing() {
   const [deposit, setDeposit] = useState([]);
   const [totalDeposit, setTotalDeposit] = useState(0);
   const [amountDeposit, setAmountDeposit] = useState(0);
+  const [refund, setRefund] = useState([]);
   const [option, setOption] = useState();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [commissionFee, setCommissionFee] = useState([]);
@@ -41,7 +43,7 @@ function Billing() {
     get({ endpoint: `/payment/revenue` })
       .then((res) => {
         const data = res.data;
-        setRevenue(data.payments)
+        setRevenue(data.payments.filter((i) => i.status !== '0'))
         setTotalRevenue(data.revenue);
         setAmountRevenue(data.total)
       })
@@ -56,7 +58,16 @@ function Billing() {
         setDeposit(data.payments)
         setTotalDeposit(data.deposit);
         setAmountDeposit(data.total)
-
+      })
+      .catch((error) => {
+        notification.error({
+          message: error.response.data.message,
+        });
+      });
+      get({ endpoint: `/payment/refund` })
+      .then((res) => {
+        const data = res.data;
+        setRefund(data.payment)
       })
       .catch((error) => {
         notification.error({
@@ -111,6 +122,31 @@ function Billing() {
         console.error('Validation failed:', error);
       });
   };
+
+  const handleClick = (id) => {
+    confirm({
+      title: 'Cảnh báo!',
+      content: 'Cho phép rút hết tiền từ tài khoản doanh nghiệp này?',
+      okText: 'Đồng ý',
+      okType: 'danger',
+      cancelText: 'Hủy',
+      onOk() { acceptItem(id) },
+    });
+    function acceptItem(id) {
+      put({ endpoint: `/payment/refund/approve/${id}` })
+        .then((res) => {
+          notification.success({
+            message: 'rút tiền thành công',
+          });
+          setFlag(false);
+        })
+        .catch((error) => {
+          notification.error({
+            message: 'Có lỗi xảy ra trong quá trình khóa',
+          });
+        });
+    }
+  }
 
   const handleCancel = () => {
     setIsModalOpen(false);
@@ -185,7 +221,14 @@ function Billing() {
       width: '15%',
       fixed: 'right',
       sorter: (a, b) => a.amount - b.amount,
-      render: (_, record) => { return <span className="bnb2">{FormatVND(record.amount, '')}</span> }
+      render: (_, record) => { return <span style={{color: option !== 'refund' ? '#52c41a': 'red'}}>{FormatVND(record.amount, '')}</span> }
+    },
+    {
+      title: option === 'refund' ? 'Xử lý': null,
+      dataIndex: "amount",
+      width: option !== 'refund' ? '0' : '15%',
+      fixed: 'right',
+      render: (_, record) => { return option === 'refund' ? <Button type="primary" onClick={()=>{handleClick(record.id)}}>Xác nhận</Button> : null }
     },
   ];
 
@@ -306,8 +349,9 @@ function Billing() {
                 title="Danh sách giao dịch"
                 extra={
                   <>
-                    <Radio.Group onChange={onChange} defaultValue="deposit">
+                    <Radio.Group onChange={onChange} defaultValue="revenue">
                       <Radio.Button value="revenue">Doanh thu</Radio.Button>
+                      <Radio.Button value="refund">Rút tiền</Radio.Button>
                       <Radio.Button value="deposit">Nạp tiền</Radio.Button>
                     </Radio.Group>
                   </>
@@ -317,7 +361,7 @@ function Billing() {
                   <Table
                     rowKey={(record) => record.id}
                     columns={columns}
-                    dataSource={option === 'revenue' ? revenue : deposit}
+                    dataSource={option === 'refund' ? refund : option === 'deposit' ? deposit : revenue}
                     pagination={true}
                     className="ant-border-space"
                   />
