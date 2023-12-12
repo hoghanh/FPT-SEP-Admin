@@ -142,7 +142,7 @@ function Billing() {
         })
         .catch((error) => {
           notification.error({
-            message: 'Có lỗi xảy ra trong quá trình khóa',
+            message: error.response.data.message,
           });
         });
     }
