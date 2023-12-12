@@ -166,7 +166,7 @@ function ClientProfile() {
                            </Group>
                            <Col style={{ padding: "10px 20px" }} >
                               <Title level={5} style={{ display: "inline-block" }}>Vai trò: </Title>
-                              <Tag color="#87d068" style={{ marginLeft: "1rem" }}>{user?.accounts.role}</Tag>
+                              <Tag color="#87d068" style={{ marginLeft: "1rem" }}>{user?.accounts.role==='client' ? 'Doanh nghiệp' : 'Freelancer'}</Tag>
                            </Col>
                            <Col style={{ padding: 20 }}>
                               <Title level={4}>{user?.title}</Title>
