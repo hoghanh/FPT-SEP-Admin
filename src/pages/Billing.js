@@ -32,6 +32,7 @@ function Billing() {
   const [totalDeposit, setTotalDeposit] = useState(0);
   const [amountDeposit, setAmountDeposit] = useState(0);
   const [refund, setRefund] = useState([]);
+  const [refundApproved, setRefundApproved] = useState([]);
   const [option, setOption] = useState();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [commissionFee, setCommissionFee] = useState([]);
@@ -74,6 +75,16 @@ function Billing() {
           message: error.response.data.message,
         });
       });
+      get({ endpoint: `/payment/refund/approved` })
+      .then((res) => {
+        const data = res.data;
+        setRefundApproved(data.payment)
+      })
+      .catch((error) => {
+        notification.error({
+          message: error.response.data.message,
+        });
+      });
   }, []);
 
   useEffect(() => {
@@ -81,6 +92,28 @@ function Billing() {
       .then((res) => {
         setCommissionFee(res.data.filter((i)=> i.name === 'commissionFee'))
         setPostingFee(res.data.filter((i)=> i.name === 'postingFee'))
+        setFlag(false);
+      })
+      .catch((error) => {
+        notification.error({
+          message: error.response.data.message,
+        });
+      });
+      get({ endpoint: `/payment/refund` })
+      .then((res) => {
+        const data = res.data;
+        setRefund(data.payment)
+        setFlag(false);
+      })
+      .catch((error) => {
+        notification.error({
+          message: error.response.data.message,
+        });
+      });
+      get({ endpoint: `/payment/refund/approved` })
+      .then((res) => {
+        const data = res.data;
+        setRefundApproved(data.payment)
         setFlag(false);
       })
       .catch((error) => {
@@ -138,7 +171,7 @@ function Billing() {
           notification.success({
             message: 'rút tiền thành công',
           });
-          setFlag(false);
+          setFlag(true);
         })
         .catch((error) => {
           notification.error({
@@ -221,7 +254,7 @@ function Billing() {
       width: '15%',
       fixed: 'right',
       sorter: (a, b) => a.amount - b.amount,
-      render: (_, record) => { return <span style={{color: option !== 'refund' ? '#52c41a': 'red'}}>{FormatVND(record.amount, '')}</span> }
+      render: (_, record) => { return <span style={{color: option === 'refund' || option === 'refund-approved' ? 'red' : '#52c41a'}}>{FormatVND(record.amount, '')}</span> }
     },
     {
       title: option === 'refund' ? 'Xử lý': null,
@@ -351,7 +384,8 @@ function Billing() {
                   <>
                     <Radio.Group onChange={onChange} defaultValue="revenue">
                       <Radio.Button value="revenue">Doanh thu</Radio.Button>
-                      <Radio.Button value="refund">Rút tiền</Radio.Button>
+                      <Radio.Button value="refund">Yêu cầu rút tiền</Radio.Button>
+                      <Radio.Button value="refund-approved">Rút tiền</Radio.Button>
                       <Radio.Button value="deposit">Nạp tiền</Radio.Button>
                     </Radio.Group>
                   </>
@@ -361,7 +395,7 @@ function Billing() {
                   <Table
                     rowKey={(record) => record.id}
                     columns={columns}
-                    dataSource={option === 'refund' ? refund : option === 'deposit' ? deposit : revenue}
+                    dataSource={option === 'refund' ? refund : option === 'refund-approved' ? refundApproved : option === 'deposit' ? deposit : revenue}
                     pagination={true}
                     className="ant-border-space"
                   />
