@@ -320,9 +320,7 @@ function Billing() {
               title={<Title level={4}>Doanh Thu</Title>}
               extra={
                 <Space size={"large"}>
-                  <p className="bnb3" style={{ margin: 0 }}>
-                  Phí dịch vụ: <span className="bnb2"> {FormatVND(commissionFee[0]?.value + postingFee[0]?.value)} </span>
-                  </p>
+                  <Typography.Text>Phí nhận việc <span className="bnb2">{FormatVND(commissionFee[0]?.value)}</span> - Phí đăng bài: <span className="bnb2">{FormatVND(postingFee[0]?.value)}</span></Typography.Text>
                   <div style={{ cursor: 'pointer' }} onClick={showModal}><Edit size={17} /></div>
                 </Space>
               }
